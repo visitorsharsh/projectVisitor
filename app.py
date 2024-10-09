@@ -49,10 +49,6 @@ mail = Mail(app)
 def home():
     return render_template('home.html')
 
-@app.route("/about")
-def aboutpage():
-    return render_template("about.html")
-
 #Visitors Page
 @app.route("/submit", methods=['GET', 'POST'])
 def submit():

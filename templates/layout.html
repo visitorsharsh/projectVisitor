@@ -36,11 +36,11 @@
         
         /* Navbar styles */
         .navbar {
-            background-color: #333; /* Black navbar */
+            background-color: #fff; /* Black navbar */
         }
         
         .navbar-brand, .nav-link {
-            color: #fff !important; /* White text for navbar items */
+            color: #333 !important; /* White text for navbar items */
         }
         
         .nav-link {
@@ -64,8 +64,8 @@
         
         /* Footer styles */
         footer {
-            background-color: #333;
-            color: white;
+            background-color: #fff;
+            color: #333;
             padding: 10px 20px; /* Adjust padding */
             text-align: center;
             position: fixed;
@@ -92,7 +92,7 @@
         <nav class="navbar navbar-expand-md navbar-dark fixed-top">
             <div class="container">
                 <a class="navbar-brand" href="/">
-                    <img src="{{ url_for('static', filename='Fusion1.png') }}" alt="Logo" style="width: 120px; height: auto;">
+                    <img src="{{ url_for('static', filename='fusion-logo-black.svg') }}" alt="Logo" style="width: 120px; height: auto;">
                 </a>    
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -100,8 +100,7 @@
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav ml-auto">
                         <a class="nav-link font-weight-bold text-danger" href="{{ url_for('admin_login') }}">Admin</a>
-                        <a class="nav-item nav-link" href="/exit">Exit Page</a>
-                        <a class="nav-item nav-link" href="/feedback">Feedback Page</a>
+                        <a class="nav-item nav-link font-weight-bold" href="/exit">Exit Page</a>
                     </div>
                 </div>
             </div>
@@ -117,7 +116,7 @@
             </div>
             <div class="col-md-4">
                 <div class="col-md-4">
-                    <img src="{{ url_for('static', filename='award.png') }}" alt="Award Image" style="max-width: 450%; height: auto;">
+                    <img src="{{ url_for('static', filename='Another.png') }}" alt="Award Image" style="max-width: 450%; height: auto;">
                 </div>
             </div>
         </div>
