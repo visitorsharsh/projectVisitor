@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var cardTypeField = document.querySelector('[name="card_type"]');
     var endDateField = document.querySelector('[name="end_date"]');
     var startDateField = document.querySelector('[name="start_date"]');
-    
+
     function adjustEndDateField() {
         if (cardTypeField.value === 'FII') {
             // Set end_date to start_date and make it readonly
@@ -106,11 +106,22 @@ document.addEventListener('DOMContentLoaded', function() {
             // Allow end_date to be edited
             endDateField.readOnly = false;
             endDateField.value = '';
+            setMinEndDate();
         }
     }
-    
+
+    function setMinEndDate() {
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = today.getFullYear();
+        today = yyyy + '-' + mm + '-' + dd; // Format: YYYY-MM-DD
+        endDateField.setAttribute('min', today);
+    }
+
     cardTypeField.addEventListener('change', adjustEndDateField);
     adjustEndDateField(); // Call on page load
+    setMinEndDate(); // Set the minimum date on page load
 });
 </script>
 

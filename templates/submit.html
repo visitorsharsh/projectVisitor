@@ -2,8 +2,8 @@
 
 {% block content %}
 <style>
-        /* Global styles for the form */
-        body {
+    /* Global styles for the form */
+    body {
         font-family: Arial, sans-serif;
         line-height: 1.6;
         background-color: #f8f9fa;
@@ -29,6 +29,10 @@
     label {
         font-weight: bold;
         margin-bottom: 5px;
+    }
+
+    .mandatory {
+        color: red; /* Red color for the asterisk */
     }
 
     input[type="text"], input[type="number"], input[type="checkbox"] {
@@ -87,22 +91,22 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Enter your details</legend>
             <div class="form-group">
-                {{ form.name.label(class="form-control-label") }}
+                {{ form.name.label(class="form-control-label") }} <span class="mandatory">*</span>
                 {{ form.name(class="form-control form-control-lg", placeholder="Enter your name") }}
             </div>
             <!--HASH-->
             <div class="form-group">
-                {{ form.contact_number.label(class="form-control-label") }}
-                {{ form.contact_number(class="form-control", placeholder="Enter your contact number") }}  
+                {{ form.contact_number.label(class="form-control-label") }} <span class="mandatory">*</span>
+                {{ form.contact_number(class="form-control", placeholder="Enter your contact number") }}
             </div>
-            
+
             <div class="form-group">
-                {{ form.meeting_person.label(class="form-control-label") }}
-                {{ form.meeting_person(class="form-control", placeholder="Who are you meeting?") }}  
-            </div>            
+                {{ form.meeting_person.label(class="form-control-label") }} <span class="mandatory">*</span>
+                {{ form.meeting_person(class="form-control", placeholder="Who are you meeting?") }}
+            </div>
             <!--HASH-->
             <div class="form-group">
-                {{ form.purpose.label(class="form-control-label") }}
+                {{ form.purpose.label(class="form-control-label") }} <span class="mandatory">*</span>
                 {{ form.purpose(class="form-control form-control-lg", placeholder="Purpose of visit", id="purpose") }}
             </div>
             <div class="form-group other-purpose" id="other_purpose_field">
@@ -111,7 +115,7 @@
             </div>
 
             <div class="form-group">
-                {{ form.Card_no.label(class="form-control-label") }}
+                {{ form.Card_no.label(class="form-control-label") }} <span class="mandatory">*</span>
                 {{ form.Card_no(class="form-control form-control-lg", placeholder="Enter your card number") }}
             </div>
 
@@ -121,14 +125,14 @@
                 <input type="checkbox" id="bringing_goods" name="bringing_goods">
                 <label for="bringing_goods">Are you bringing any goods (materials)?</label>
             </div>
-            
+
             <!-- Hidden fields for entering goods details -->
             <div class="form-group" id="goods_details" style="display:none;">
                 <div class="goods-field">
                     <label for="goods_name">Goods/Material Name</label>
                     <input type="text" id="goods_name" name="goods_name" class="form-control" placeholder="Enter goods/material name">
                 </div>
-            
+
                 <div class="goods-field">
                     <label for="goods_quantity">Quantity</label>
                     <input type="number" id="goods_quantity" name="goods_quantity" class="form-control" placeholder="Enter quantity">
@@ -140,6 +144,8 @@
             {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Submit") }}
         </div>
     </form>
+
+    <p class="text-muted"><small><span class="mandatory">*</span> Fields are mandatory.</small></p>
 </div>
 
 <div class="border-top pt-3">
@@ -161,20 +167,20 @@
     }
 
     document.getElementById('contact_number').addEventListener('input', function (e) {
-    var input = e.target.value;
-    // Takes only integer values
-    input = input.replace(/\D/g, '');
-    
-    // Number Formating
-    if (input.length > 3 && input.length <= 7) {
-        input = input.slice(0, 3) + '-' + input.slice(3);
-    } else if (input.length > 7) {
-        input = input.slice(0, 3) + '-' + input.slice(3, 7) + '-' + input.slice(7, 10);
-    }
+        var input = e.target.value;
+        // Takes only integer values
+        input = input.replace(/\D/g, '');
 
-    // Set the formatted value back to the input field
-    e.target.value = input;
-});
+        // Number Formatting
+        if (input.length > 3 && input.length <= 7) {
+            input = input.slice(0, 3) + '-' + input.slice(3);
+        } else if (input.length > 7) {
+            input = input.slice(0, 3) + '-' + input.slice(3, 7) + '-' + input.slice(7, 10);
+        }
+
+        // Set the formatted value back to the input field
+        e.target.value = input;
+    });
 
     // Add event listener to 'Purpose' field to toggle 'Other Purpose' field
     document.addEventListener('DOMContentLoaded', function() {
@@ -189,20 +195,19 @@
             toggleOtherPurposeField();
         });
 
-        // #######################################################
         document.getElementById('bringing_goods').addEventListener('change', function() {
-        var goodsDetails = document.getElementById('goods_details');
-        if (this.checked) {
-            goodsDetails.style.display = 'block';  // Show fields if checkbox is checked
-        } else {
-            goodsDetails.style.display = 'none';   // Hide fields if unchecked
-        }
+            var goodsDetails = document.getElementById('goods_details');
+            if (this.checked) {
+                goodsDetails.style.display = 'block';  // Show fields if checkbox is checked
+            } else {
+                goodsDetails.style.display = 'none';   // Hide fields if unchecked
+            }
         });
     });
 </script>
 
 <footer class="footer"></footer>
-    <p>&copy; 2024 Fusion Global Business Solutions</p>
+<p>&copy; 2024 Fusion Global Business Solutions</p>
 </footer>
 
 <style>
