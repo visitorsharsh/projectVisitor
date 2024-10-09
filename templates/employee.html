@@ -6,11 +6,11 @@
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Employee Email Verification</legend>
-            
+
             <!-- Email input field -->
             <div class="form-group">
-                {{ form.email.label(class="form-control-label") }}
-                {{ form.email(class="form-control form-control-lg", placeholder="Enter your email for verification") }}
+                {{ form.email.label(class="form-control-label") }} <span class="text-danger">*</span>
+                {{ form.email(class="form-control form-control-lg", placeholder="Enter your email for verification", required=true) }}
             </div>
         </fieldset>
 
@@ -19,12 +19,12 @@
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Enter OTP</legend>
             <div class="form-group">
-                {{ otp_form.otp.label(class="form-control-label") }}
-                {{ otp_form.otp(class="form-control form-control-lg", placeholder="Enter OTP sent to your email") }}
+                {{ otp_form.otp.label(class="form-control-label") }} <span class="text-danger">*</span>
+                {{ otp_form.otp(class="form-control form-control-lg", placeholder="Enter OTP sent to your email", required=true) }}
             </div>
         </fieldset>
         {% endif %}
-        
+
         <div class="form-group">
             {% if show_otp %}
                 {{ otp_form.submit(class="btn btn-custom btn-lg btn-block", value="Submit OTP") }}
@@ -32,6 +32,11 @@
                 {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Verify Email") }}
             {% endif %}
         </div>
+
+        <!-- Mandatory fields message at the bottom -->
+        <p class="text-muted mt-3">
+            <small><span class="text-danger">*</span> Fields are mandatory.</small>
+        </p>
     </form>
 </div>
 
@@ -56,6 +61,10 @@
 
     .btn-custom:hover {
         background-color: #e04350;
+    }
+
+    .text-danger {
+        color: #e03e3e; /* Customize the asterisk color */
     }
 </style>
 
