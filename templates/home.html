@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section">
+    <h1 class="text-center">Welcome to Fusion</h1>
+    <p class="text-center">Please Select:</p>
+    
+    <div class="form-group text-center">
+        <a href="{{ url_for('submit') }}" class="btn btn-custom">Visitor</a>
+        <a href="{{ url_for('employee') }}" class="btn btn-custom">Employee</a>
+    </div>
+</div>
+
+<style>
+    .content-section {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-custom {
+        margin: 10px;
+        padding: 12px 24px;
+        background-color: #000000;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+    }
+</style>
+{% endblock content %}

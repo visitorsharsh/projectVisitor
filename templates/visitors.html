@@ -1,0 +1,163 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa; /* Light background color */
+        padding: 10px;
+        overflow: hidden; /* Disable scrolling */
+    }
+
+    .table-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 40px; /* Adjusted gap between tables */
+        margin-bottom: 20px;
+        margin-top: 40px;
+    }
+
+    .scrollable-table {
+        max-height: 360px; /* Adjusted to show 3 rows (assuming each row is about 120px high) */
+        overflow-y: auto; /* Enable vertical scrolling */
+        overflow-x: hidden;
+        border-radius: 8px; /* Rounded corners */
+        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Optional: Add shadow for depth */
+    }
+
+    .scrollable-table table {
+        width: 100%; /* Ensure the table takes full width */
+        background-color: #fff; /* White background for tables */
+        border-collapse: collapse;
+        margin-bottom: 20px; /* Added margin below each table */
+    }
+
+    .scrollable-table th, .scrollable-table td {
+        border: 1px solid #ddd; /* Light gray border */
+        padding: 12px;
+        text-align: left;
+    }
+
+    .scrollable-table th {
+        background-color: #f2f2f2; /* Light gray background for header cells */
+        font-weight: bold;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 2em; /* Larger font size */
+        color: #333; /* Darker text color */
+        text-align: center; /* Center align heading */
+        text-transform: uppercase; /* Uppercase text */
+        letter-spacing: 1px; /* Increased letter spacing */
+        border-bottom: 2px solid #ccc; /* Bottom border */
+        padding-bottom: 5px; /* Space below the border */
+    }
+
+    /* Search input style */
+    .search-input, .filter-input {
+        margin-bottom: 10px;
+        padding: 8px;
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+</style>
+
+<h1>Visitor Records</h1>
+
+<!-- Search input for visitor name -->
+<input type="text" id="visitor-search" class="search-input" placeholder="Search by Visitor Name">
+
+<!-- Filter input for purpose -->
+<input type="text" id="purpose-filter" class="filter-input" placeholder="Filter by Purpose">
+
+<!-- Dropdown for "In use" and "Not in use" -->
+<select id="exit-filter" class="filter-input">
+    <option value="">Filter by Exit Status</option>
+    <option value="in-use">In Use</option>
+    <option value="not-in-use">Not In Use</option>
+</select>
+
+<div class="table-container">
+    <div class="scrollable-table">
+        <table class="visitors-table">
+            <caption>Visitors</caption>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Purpose</th>
+                    <th>Card No</th>
+                    <th>Time of Visit</th>
+                    <th>Time of Exit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for visitor in visitors %}
+                <tr>
+                    <td>{{ visitor.id }}</td>
+                    <td>{{ visitor.name }}</td>
+                    <td>{{ visitor.purpose }}</td>
+                    <td>{{ visitor.Card_no }}</td>
+                    <td>{{ visitor.date_visited.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_visited else "Currently in use" }}</td>
+                    <td>{{ visitor.date_left.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_left else "Currently in use" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    
+</div>
+
+<script>
+    // JavaScript for filtering visitors table by name, purpose, and exit status
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('visitor-search');
+        const purposeFilter = document.getElementById('purpose-filter');
+        const exitFilter = document.getElementById('exit-filter');
+        const visitorRows = document.querySelectorAll('.visitors-table tbody tr');
+
+        searchInput.addEventListener('input', filterVisitors);
+        purposeFilter.addEventListener('input', filterVisitors);
+        exitFilter.addEventListener('change', filterVisitors);
+
+        function filterVisitors() {
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            const filterTerm = purposeFilter.value.trim().toLowerCase();
+            const exitStatus = exitFilter.value;
+
+            visitorRows.forEach(row => {
+                const nameCell = row.querySelector('td:nth-child(2)'); // 2nd column (index 1) is Name
+                const purposeCell = row.querySelector('td:nth-child(3)'); // 3rd column (index 2) is Purpose
+                const exitCell = row.querySelector('td:nth-child(6)'); // 6th column (index 5) is Time of Exit
+                const nameText = nameCell.textContent.trim().toLowerCase();
+                const purposeText = purposeCell.textContent.trim().toLowerCase();
+                const exitText = exitCell.textContent.trim();
+
+                const nameMatch = nameText.includes(searchTerm);
+                const purposeMatch = purposeText.includes(filterTerm);
+
+                let exitMatch = true; // Default to true if no filter selected
+                if (exitStatus === 'in-use') {
+                    exitMatch = exitText === 'Currently in use';
+                } else if (exitStatus === 'not-in-use') {
+                    exitMatch = exitText !== 'Currently in use';
+                }
+
+                if (nameMatch && purposeMatch && exitMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+    });
+</script>
+
+{% endblock content %}

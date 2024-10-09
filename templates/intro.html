@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa; /* Light background color */
+        padding: 20px;
+        overflow: hidden; /* Disable scrolling */
+    }
+
+    /* Form section styles */
+    .content-section {
+        max-width: 600px; /* Limit width for better readability */
+        margin: 0 auto; /* Center align the form */
+        padding: 20px; /* Add padding for spacing */
+        border: 1px solid #ccc; /* Add a subtle border */
+        border-radius: 8px; /* Rounded corners */
+        background-color: #fff; /* White background color */
+        box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Optional: Add shadow for depth */
+    }
+
+    /* Legend styles */
+    legend {
+        font-size: 1.5em; /* Increase legend font size */
+        font-weight: bold; /* Bold legend text */
+        color: #333; /* Darker text color */
+        border-bottom: 2px solid #ccc; /* Bottom border */
+        padding-bottom: 10px; /* Space below the legend */
+        margin-bottom: 20px; /* Space below the legend */
+    }
+
+    /* Form field styles */
+    .form-group {
+        margin-bottom: 20px; /* Add space between form elements */
+    }
+
+    .form-control-label {
+        font-weight: bold; /* Bold label text */
+    }
+
+    .form-control-lg {
+        padding: 12px; /* Larger padding for better touch experience */
+        font-size: 1.1em; /* Larger font size */
+        border-radius: 4px; /* Rounded corners for inputs */
+        border: 1px solid #ccc; /* Light border */
+    }
+
+    /* Submit button styles */
+    .btn-custom {
+        color: #ffffff; /* Text color */
+        background-color: #000000; /* Black background */
+        border-color: #000000; /* Black border */
+        padding: 12px 24px; /* Padding around button text */
+        transition: background-color 0.3s ease; /* Smooth transition */
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350; /* Red hover background color (London bus red) */
+        border-color: #e04350; /* Red border color */
+    }
+
+    /* Border top styles */
+    .border-top {
+        border-top: 1px solid #ccc; /* Light border top */
+        margin-top: 20px; /* Space above the border */
+        padding-top: 20px; /* Space above the border */
+    }
+</style>
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.entry(class="btn btn-custom btn-lg btn-block", value="Entry") }}
+        </div>
+        <div class="form-group">
+            {{ form.exit(class="btn btn-custom btn-lg btn-block", value="Exit") }}
+        </div>
+    </form>
+</div>
+
+<div class="border-top pt-3">
+    <!-- Optional: Additional content below the form -->
+</div>
+{% endblock content %}

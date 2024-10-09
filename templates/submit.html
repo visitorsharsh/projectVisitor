@@ -1,0 +1,221 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+        /* Global styles for the form */
+        body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa;
+        padding: 20px;
+        overflow: auto; /* Enable scrolling */
+    }
+
+    /* Form section styles */
+    .content-section {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px; /* Standardized margin between form groups */
+    }
+
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"], input[type="number"], input[type="checkbox"] {
+        display: inline-block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+    }
+
+    input[type="checkbox"] {
+        width: auto;
+        margin-right: 10px;
+    }
+
+    .form-group.checkbox-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    #goods_details {
+        margin-top: 10px; /* Smaller gap between checkbox and goods fields */
+    }
+
+    .goods-field {
+        margin-bottom: 10px; /* Consistent spacing between goods fields */
+    }
+
+    .btn-custom {
+        color: #ffffff;
+        background-color: #000000;
+        border-color: #000000;
+        padding: 12px 24px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+        border-color: #e04350;
+    }
+
+    @media (pointer: coarse) {
+        .btn-custom {
+            padding: 18px 36px;
+            font-size: 1.5em;
+        }
+    }
+</style>
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Enter your details</legend>
+            <div class="form-group">
+                {{ form.name.label(class="form-control-label") }}
+                {{ form.name(class="form-control form-control-lg", placeholder="Enter your name") }}
+            </div>
+            <!--HASH-->
+            <div class="form-group">
+                {{ form.contact_number.label(class="form-control-label") }}
+                {{ form.contact_number(class="form-control", placeholder="Enter your contact number") }}  
+            </div>
+            
+            <div class="form-group">
+                {{ form.meeting_person.label(class="form-control-label") }}
+                {{ form.meeting_person(class="form-control", placeholder="Who are you meeting?") }}  
+            </div>            
+            <!--HASH-->
+            <div class="form-group">
+                {{ form.purpose.label(class="form-control-label") }}
+                {{ form.purpose(class="form-control form-control-lg", placeholder="Purpose of visit", id="purpose") }}
+            </div>
+            <div class="form-group other-purpose" id="other_purpose_field">
+                {{ form.other_purpose.label(class="form-control-label") }}
+                {{ form.other_purpose(class="form-control form-control-lg", placeholder="Specify other purpose") }}
+            </div>
+
+            <div class="form-group">
+                {{ form.Card_no.label(class="form-control-label") }}
+                {{ form.Card_no(class="form-control form-control-lg", placeholder="Enter your card number") }}
+            </div>
+
+            <!--HASH-->
+            <div class="form-group checkbox-group">
+                <!-- Checkbox to indicate if the user is bringing goods -->
+                <input type="checkbox" id="bringing_goods" name="bringing_goods">
+                <label for="bringing_goods">Are you bringing any goods (materials)?</label>
+            </div>
+            
+            <!-- Hidden fields for entering goods details -->
+            <div class="form-group" id="goods_details" style="display:none;">
+                <div class="goods-field">
+                    <label for="goods_name">Goods/Material Name</label>
+                    <input type="text" id="goods_name" name="goods_name" class="form-control" placeholder="Enter goods/material name">
+                </div>
+            
+                <div class="goods-field">
+                    <label for="goods_quantity">Quantity</label>
+                    <input type="number" id="goods_quantity" name="goods_quantity" class="form-control" placeholder="Enter quantity">
+                </div>
+            </div>
+        <!--HASH-->
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Submit") }}
+        </div>
+    </form>
+</div>
+
+<div class="border-top pt-3">
+    <!-- Optional: Additional content below the form -->
+</div>
+
+<script>
+    // Function to toggle the visibility of 'Other Purpose' field
+    function toggleOtherPurposeField() {
+        var purposeField = document.getElementById('purpose');
+        var otherPurposeField = document.getElementById('other_purpose_field');
+
+        // Show the 'Other Purpose' field if 'Other' is selected, hide otherwise
+        if (purposeField.value === 'Other') {
+            otherPurposeField.style.display = 'block';
+        } else {
+            otherPurposeField.style.display = 'none';
+        }
+    }
+
+    document.getElementById('contact_number').addEventListener('input', function (e) {
+    var input = e.target.value;
+    // Takes only integer values
+    input = input.replace(/\D/g, '');
+    
+    // Number Formating
+    if (input.length > 3 && input.length <= 7) {
+        input = input.slice(0, 3) + '-' + input.slice(3);
+    } else if (input.length > 7) {
+        input = input.slice(0, 3) + '-' + input.slice(3, 7) + '-' + input.slice(7, 10);
+    }
+
+    // Set the formatted value back to the input field
+    e.target.value = input;
+});
+
+    // Add event listener to 'Purpose' field to toggle 'Other Purpose' field
+    document.addEventListener('DOMContentLoaded', function() {
+        var purposeField = document.getElementById('purpose');
+        var otherPurposeField = document.getElementById('other_purpose_field');
+
+        // Initially hide/show based on current value
+        toggleOtherPurposeField();
+
+        // Add change event listener to purposeField
+        purposeField.addEventListener('change', function() {
+            toggleOtherPurposeField();
+        });
+
+        // #######################################################
+        document.getElementById('bringing_goods').addEventListener('change', function() {
+        var goodsDetails = document.getElementById('goods_details');
+        if (this.checked) {
+            goodsDetails.style.display = 'block';  // Show fields if checkbox is checked
+        } else {
+            goodsDetails.style.display = 'none';   // Hide fields if unchecked
+        }
+        });
+    });
+</script>
+
+<footer class="footer"></footer>
+    <p>&copy; 2024 Fusion Global Business Solutions</p>
+</footer>
+
+<style>
+    /* Footer styling */
+    .footer {
+        text-align: center;
+        padding: 20px 0;
+        background-color: #f8f9fa;
+        color: #333;
+        font-size: 0.9em;
+        position: relative;
+        margin-top: 20px;
+        border-top: 1px solid #ccc;
+    }
+</style>
+{% endblock content %}

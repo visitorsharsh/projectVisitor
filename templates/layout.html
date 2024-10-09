@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+    
+    {% if title %}
+        <title>Fusion - {{ title }}</title>
+    {% else %}
+        <title>Fusion</title>
+    {% endif %}
+    
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f8f9fa; /* Light background for contrast */
+            color: #333; /* Dark text for readability */
+            padding-top: 80px; /* Adjust for fixed navbar */
+            background-image: url("{{ url_for('static', filename='background.png') }}");
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed; /* Fixed background */
+            background-position: center center;
+            min-height: 100vh; /* Ensure full height */
+            margin-bottom: -50px; /* Adjust negative margin to remove gap */
+        }
+        
+        /* Navbar styles */
+        .navbar {
+            background-color: #333; /* Black navbar */
+        }
+        
+        .navbar-brand, .nav-link {
+            color: #fff !important; /* White text for navbar items */
+        }
+        
+        .nav-link {
+            margin-right: 15px;
+        }
+        
+        .nav-link:hover {
+            color: #ff4b5c !important; /* Red hover effect */
+        }
+        
+        /* Active link style */
+        .nav-link.active {
+            color: #ff4b5c !important;
+        }
+        
+        /* Main content container */
+        .site-main {
+            margin-top: 20px; /* Space above main content */
+            margin-bottom: 60px; /* Space below main content */
+        }
+        
+        /* Footer styles */
+        footer {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px; /* Adjust padding */
+            text-align: center;
+            position: fixed;
+            width: calc(100%); /* Ensure the footer doesn't extend past the viewport */
+            bottom: 0;
+            left: 0px; /* Extend the footer a little to the left */
+            z-index: 1000; /* Ensure footer is above other content */
+        }
+        
+        /* Styling the text on the right side */
+        .text-right p {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Use a modern sans-serif font */
+            font-size: 20px; /* Slightly smaller font size for better readability */
+            font-weight: normal; /* Use normal weight for a balanced look */
+            color: #666; /* Dark gray text color for subtlety */
+            line-height: 1.6; /* Increased line height for better spacing */
+            margin-top: 20px; /* Add some top margin for separation */
+            text-align: justify; /* Justify text for a neat alignment */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="{{ url_for('static', filename='Fusion1.png') }}" alt="Logo" style="width: 120px; height: auto;">
+                </a>    
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarToggle">
+                    <div class="navbar-nav ml-auto">
+                        <a class="nav-link font-weight-bold text-danger" href="{{ url_for('admin_login') }}">Admin</a>
+                        <a class="nav-item nav-link" href="/exit">Exit Page</a>
+                        <a class="nav-item nav-link" href="/feedback">Feedback Page</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main" class="container site-main">
+        <div class="row">
+            <div class="col-md-8">
+                {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+            <div class="col-md-4">
+                <div class="col-md-4">
+                    <img src="{{ url_for('static', filename='award.png') }}" alt="Award Image" style="max-width: 450%; height: auto;">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            &copy; {{ current_year }} Fusion. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- Script for active link detection -->
+    <script>
+    $(document).ready(function () {
+        var url = window.location;
+        $('a.nav-link[href="'+ url +'"]').addClass('active');
+        $('a.nav-link').filter(function() {
+            return this.href == url;
+        }).addClass('active');
+    });
+    </script>
+</body>
+</html>

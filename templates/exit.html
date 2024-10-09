@@ -1,0 +1,84 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa; /* Light background color */
+        padding: 20px;
+        overflow: hidden; /* Disable scrolling */
+    }
+
+    /* Form section styles */
+    .content-section {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 30px;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form field styles */
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-control-label {
+        font-weight: bold;
+        color: #495057;
+    }
+
+    .form-control {
+        font-size: 1rem;
+        color: #495057;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        padding: 10px;
+    }
+
+    /* Submit button styles */
+    .btn-custom {
+        color: #ffffff;
+        background-color: #343a40; /* Black background */
+        border-color: #343a40; /* Black border */
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350; /* Red background on hover */
+        border-color: #e04350; /* Red border on hover */
+    }
+
+    /* Legend styles */
+    legend {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #212529;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend>Enter Your Card Number</legend>
+            <div class="form-group">
+                {{ form.Card_no.label(class="form-control-label") }}
+                {{ form.Card_no(class="form-control") }}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-custom btn-lg btn-block") }}
+        </div>
+    </form>
+</div>
+
+<div class="text-center mt-3">
+    <!-- Optional: Additional content below the form -->
+</div>
+{% endblock content %}

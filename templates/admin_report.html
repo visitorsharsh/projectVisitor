@@ -1,0 +1,27 @@
+<a href="{{ url_for('export_report_csv') }}" class="btn btn-primary">Export CSV</a>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Contact Number</th>
+      <th>Meeting Person</th>
+      <th>Purpose</th>
+      <th>Card No</th>
+      <th>Date Visited</th>
+      <th>Date Left</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for visitor in visitors %}
+    <tr>
+      <td>{{ visitor.name }}</td>
+      <td>{{ visitor.contact_number }}</td>
+      <td>{{ visitor.meeting_person }}</td>
+      <td>{{ visitor.purpose }}</td>
+      <td>{{ visitor.Card_no }}</td>
+      <td>{{ visitor.date_visited }}</td>
+      <td>{{ visitor.date_left }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

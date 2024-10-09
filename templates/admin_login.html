@@ -1,0 +1,35 @@
+<!-- admin_login.html -->
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center">Admin Login</h1>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form method="POST">
+                {{ form.hidden_tag() }}
+
+                <!-- Email Input -->
+                <div class="form-group">
+                    {{ form.email.label(class="form-label") }}
+                    {{ form.email(class="form-control") }}
+                </div>
+
+                <!-- OTP Input (shown after email is verified) -->
+                {% if show_otp %}
+                <div class="form-group">
+                    {{ otp_form.otp.label(class="form-label") }}
+                    {{ otp_form.otp(class="form-control") }}
+                </div>
+                {% endif %}
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

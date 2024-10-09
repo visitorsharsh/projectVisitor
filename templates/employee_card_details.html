@@ -1,0 +1,134 @@
+{% extends "layout.html" %}
+{% block content %}
+<style>
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #f8f9fa;
+    padding: 20px;
+    overflow: auto;
+}
+
+/* Form section styles */
+.content-section {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"], input[type="number"], select, input[type="date"] {
+    display: inline-block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
+}
+
+.btn-custom {
+    color: #ffffff;
+    background-color: #000000;
+    border-color: #000000;
+    padding: 12px 24px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: #e04350;
+    border-color: #e04350;
+}
+
+@media (pointer: coarse) {
+    .btn-custom {
+        padding: 18px 36px;
+        font-size: 1.5em;
+    }
+}
+</style>
+
+<div class="content-section">
+    <h1>Card Details for {{ email }}</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="form-group">
+            {{ form.card_type.label(class="form-control-label") }}
+            {{ form.card_type(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.start_date.label(class="form-control-label") }}
+            {{ form.start_date(class="form-control", readonly=True) }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.end_date.label(class="form-control-label") }}
+            {{ form.end_date(class="form-control") }}
+        </div>
+        
+        <div class="form-group">
+            {{ form.Card_no.label(class="form-control-label") }}
+            {{ form.Card_no(class="form-control") }}
+        </div>
+        
+        {{ form.submit(class="btn btn-custom btn-lg btn-block") }}
+    </form>
+</div>
+
+<script>
+// JavaScript to adjust the end_date field based on card_type selection
+document.addEventListener('DOMContentLoaded', function() {
+    var cardTypeField = document.querySelector('[name="card_type"]');
+    var endDateField = document.querySelector('[name="end_date"]');
+    var startDateField = document.querySelector('[name="start_date"]');
+    
+    function adjustEndDateField() {
+        if (cardTypeField.value === 'FII') {
+            // Set end_date to start_date and make it readonly
+            endDateField.value = startDateField.value;
+            endDateField.readOnly = true;
+        } else {
+            // Allow end_date to be edited
+            endDateField.readOnly = false;
+            endDateField.value = '';
+        }
+    }
+    
+    cardTypeField.addEventListener('change', adjustEndDateField);
+    adjustEndDateField(); // Call on page load
+});
+</script>
+
+<style>
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    background-color: #f8f9fa;
+    color: #333;
+    font-size: 0.9em;
+    position: relative;
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+}
+</style>
+
+<footer class="footer">
+    <p>&copy; 2024 Fusion Global Business Solutions</p>
+</footer>
+
+{% endblock %}

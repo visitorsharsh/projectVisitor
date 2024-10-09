@@ -1,0 +1,183 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    .form-container {
+        max-width: 500px;
+        margin: 40px auto;
+        padding: 30px;
+        border-radius: 8px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .rating-container {
+        margin-top: 10px;
+    }
+
+    .rating-box {
+        padding: 10px;
+    }
+
+    .rating-label p {
+        margin: 0;
+    }
+
+    .rate-area {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        border-style: none;
+    }
+
+    .rate-area input {
+        display: none;
+    }
+
+    .rate-area label {
+        cursor: pointer;
+        font-size: 180%;
+        color: lightgrey;
+        margin: 0 2px;
+    }
+
+    .rate-area label:before {
+        content: "★";
+    }
+
+    .rate-area input:checked~label {
+        color: #F79426;
+    }
+
+    .rate-area label:hover,
+    .rate-area label:hover~label {
+        color: gold;
+    }
+
+    .rate-area input:checked+label:hover,
+    .rate-area input:checked+label:hover~label,
+    .rate-area input:checked~label:hover,
+    .rate-area input:checked~label:hover~label,
+    .rate-area label:hover~input:checked~label {
+        color: #FECE31;
+    }
+
+    /* Submit button styles */
+    .btn-custom {
+        color: #ffffff;
+        /* Button text color */
+        background-color: #000000;
+        /* Black background */
+        border-color: #000000;
+        /* Black border */
+        padding: 15px 30px;
+        /* Increased padding around button text */
+        font-size: 1.3em;
+        /* Increased button font size */
+        margin-top: 20px;
+        /* Space above the button */
+        transition: background-color 0.3s ease;
+        /* Smooth transition */
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+        /* Red hover background color */
+        border-color: #e04350;
+        /* Red border color */
+    }
+</style>
+
+<form method="POST" action="">
+    {{ form.hidden_tag() }}
+    <div class="form-container">
+        <div class="rating-container">
+            <div class="rating-box">
+                <div class="rating-label">
+                    <p>Proffesionalism:</p>
+                </div>
+                <div class="rating">
+                    <ul class="rate-area">
+                        <input type="radio" id="service_star5" name="service_rating" value="5" />
+                        <label class="star" for="service_star5" title="Awesome" aria-hidden="true"></label>
+                        <input type="radio" id="service_star4" name="service_rating" value="4" />
+                        <label class="star" for="service_star4" title="Great" aria-hidden="true"></label>
+                        <input type="radio" id="service_star3" name="service_rating" value="3" />
+                        <label class="star" for="service_star3" title="Very good" aria-hidden="true"></label>
+                        <input type="radio" id="service_star2" name="service_rating" value="2" />
+                        <label class="star" for="service_star2" title="Good" aria-hidden="true"></label>
+                        <input type="radio" id="service_star1" name="service_rating" value="1" />
+                        <label class="star" for="service_star1" title="Bad" aria-hidden="true"></label>
+                    </ul>
+                </div>
+            </div>
+            <div class="rating-box">
+                <div class="rating-label">
+                    <p>Hospitality:</p>
+                </div>
+                <div class="rating">
+                    <ul class="rate-area">
+                        <input type="radio" id="quality_star5" name="quality_rating" value="5" />
+                        <label class="star" for="quality_star5" title="Awesome" aria-hidden="true"></label>
+                        <input type="radio" id="quality_star4" name="quality_rating" value="4" />
+                        <label class="star" for="quality_star4" title="Great" aria-hidden="true"></label>
+                        <input type="radio" id="quality_star3" name="quality_rating" value="3" />
+                        <label class="star" for="quality_star3" title="Very good" aria-hidden="true"></label>
+                        <input type="radio" id="quality_star2" name="quality_rating" value="2" />
+                        <label class="star" for="quality_star2" title="Good" aria-hidden="true"></label>
+                        <input type="radio" id="quality_star1" name="quality_rating" value="1" />
+                        <label class="star" for="quality_star1" title="Bad" aria-hidden="true"></label>
+                    </ul>
+                </div>
+            </div>
+            <div class="rating-box">
+                <div class="rating-label">
+                    <p>Hygene:</p>
+                </div>
+                <div class="rating">
+                    <ul class="rate-area">
+                        <input type="radio" id="support_star5" name="support_rating" value="5" />
+                        <label class="star" for="support_star5" title="Awesome" aria-hidden="true"></label>
+                        <input type="radio" id="support_star4" name="support_rating" value="4" />
+                        <label class="star" for="support_star4" title="Great" aria-hidden="true"></label>
+                        <input type="radio" id="support_star3" name="support_rating" value="3" />
+                        <label class="star" for="support_star3" title="Very good" aria-hidden="true"></label>
+                        <input type="radio" id="support_star2" name="support_rating" value="2" />
+                        <label class="star" for="support_star2" title="Good" aria-hidden="true"></label>
+                        <input type="radio" id="support_star1" name="support_rating" value="1" />
+                        <label class="star" for="support_star1" title="Bad" aria-hidden="true"></label>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-custom btn-lg" id="submit-btn" disabled>Submit Feedback</button>
+        </div>
+    </div>
+</form>
+
+<script>
+    // JavaScript to enable the submit button once all ratings are selected
+    document.addEventListener("DOMContentLoaded", function() {
+        const ratingInputs = document.querySelectorAll(".rate-area input[type='radio']");
+        const submitButton = document.getElementById('submit-btn');
+
+        ratingInputs.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                // Check if all rating inputs have a selection
+                const allRatingsSelected = document.querySelectorAll(".rate-area input[type='radio']:checked").length === 3;
+                submitButton.disabled = !allRatingsSelected;
+            });
+        });
+    });
+</script>
+{% endblock content %}

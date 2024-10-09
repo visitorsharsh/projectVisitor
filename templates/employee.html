@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Employee Email Verification</legend>
+            
+            <!-- Email input field -->
+            <div class="form-group">
+                {{ form.email.label(class="form-control-label") }}
+                {{ form.email(class="form-control form-control-lg", placeholder="Enter your email for verification") }}
+            </div>
+        </fieldset>
+
+        <!-- Show OTP field if the email has been submitted -->
+        {% if show_otp %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Enter OTP</legend>
+            <div class="form-group">
+                {{ otp_form.otp.label(class="form-control-label") }}
+                {{ otp_form.otp(class="form-control form-control-lg", placeholder="Enter OTP sent to your email") }}
+            </div>
+        </fieldset>
+        {% endif %}
+        
+        <div class="form-group">
+            {% if show_otp %}
+                {{ otp_form.submit(class="btn btn-custom btn-lg btn-block", value="Submit OTP") }}
+            {% else %}
+                {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Verify Email") }}
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<style>
+    .content-section {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-custom {
+        background-color: #000000;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+    }
+</style>
+
+{% endblock content %}
