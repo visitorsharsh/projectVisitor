@@ -1,0 +1,35 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Admin Report - Employees & Visitors</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Email/Name</th>
+                <th>Card No</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in data %}
+                <tr>
+                    <td>{{ row.type }}</td>
+                    <td>{{ row.email_or_name }}</td>
+                    <td>{{ row.card_no }}</td>
+                    <td>{{ row.start_date }}</td>
+                    <td>{{ row.end_date }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

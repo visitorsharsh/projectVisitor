@@ -21,6 +21,7 @@ from forms import (
     Feedbackform,
 )
 from data import (
+    Employee,
     visitors,
     card,
     update_cards,
@@ -191,27 +192,56 @@ def employee_card_details(email):
         end_date = form.end_date.data
         card_no = form.Card_no.data
         
-        # Insert new visitor, allowing nullable fields
-        new_record = visitors(
-            name=email,  # Email is used as name
-            contact_number=None,  # Set to None if not provided
-            meeting_person=None,  # Set to None if not provided
-            purpose=None,  # Set to None if not provided
-            date_visited=start_date,
-            date_left=None,  # Assuming the visitor hasn't left yet
-            Card_no=card_no,
-            card_type=card_type,
+        # Insert new employee record
+        new_employee = Employee(
+            employee_type=card_type,
+            email=email,  # Email comes from the URL parameter
             start_date=start_date,
-            end_date=end_date
+            end_date=end_date,
+            card_no=card_no
         )
         
-        db.session.add(new_record)
+        # Add to the database session and commit
+        db.session.add(new_employee)
         db.session.commit()
         
         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
         return redirect(url_for('home'))
     
     return render_template('employee_card_details.html', form=form, email=email)
+
+
+# @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
+# def employee_card_details(email):
+#     form = EmployeeCardDetailsForm()
+    
+#     if form.validate_on_submit():
+#         card_type = form.card_type.data
+#         start_date = form.start_date.data
+#         end_date = form.end_date.data
+#         card_no = form.Card_no.data
+        
+#         # Insert new visitor, allowing nullable fields
+#         new_record = visitors(
+#             name=email,  # Email is used as name
+#             contact_number=None,  # Set to None if not provided
+#             meeting_person=None,  # Set to None if not provided
+#             purpose=None,  # Set to None if not provided
+#             date_visited=start_date,
+#             date_left=None,  # Assuming the visitor hasn't left yet
+#             Card_no=card_no,
+#             card_type=card_type,
+#             start_date=start_date,
+#             end_date=end_date
+#         )
+        
+#         db.session.add(new_record)
+#         db.session.commit()
+        
+#         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
+#         return redirect(url_for('home'))
+    
+#     return render_template('employee_card_details.html', form=form, email=email)
 
 #Admin Page
 def admin_required(f):
