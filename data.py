@@ -11,8 +11,8 @@ class visitors(db.Model):
     contact_number = db.Column(db.String(10), nullable=True)  # Allows NULL values
     meeting_person = db.Column(db.String(50), nullable=True)  # Allows NULL values
     purpose = db.Column(db.String(50), nullable=True)  # Allows NULL values
-    #date_visited = db.Column(db.DateTime, nullable=False, default=datetime.utcnow() + timedelta(hours=5, minutes=30))
-    #date_left = db.Column(db.DateTime)
+    date_visited = db.Column(db.DateTime, nullable=False, default=datetime.utcnow() + timedelta(hours=5, minutes=30))
+    date_left = db.Column(db.DateTime)
     Card_no = db.Column(db.Integer, nullable=False)
     card_type = db.Column(db.String(20), nullable=False)
     start_date = db.Column(db.DateTime, nullable=True)
@@ -122,3 +122,36 @@ def change_status(form):
             db.session.commit()
             return "Exit time noted!"
         return "Visitor not found!"
+
+# Assuming you have the necessary imports
+from sqlalchemy import Column, String, DateTime
+
+class ReportData:
+    def __init__(self, identifier, card_no, entry, exit):
+        self.identifier = identifier  # This will be either visitor name or employee email
+        self.card_no = card_no
+        self.entry = entry  # Entry time
+        self.exit = exit    # Exit time
+
+def fetch_report_data():
+    # Query to fetch data from visitors
+    visitors_query = db.session.query(
+        visitors.name.label('identifier'),
+        visitors.Card_no,
+        visitors.date_visited.label('entry'),
+        visitors.date_left.label('exit')
+    ).all()
+    
+    # Query to fetch data from employees
+    employees_query = db.session.query(
+        Employee.email.label('identifier'),
+        Employee.card_no,
+        Employee.start_date.label('entry'),
+        Employee.end_date.label('exit')
+    ).all()
+    
+    # Combine both queries into a list of ReportData instances
+    report_data = [ReportData(*row) for row in visitors_query] + \
+                  [ReportData(*row) for row in employees_query]
+    
+    return report_data

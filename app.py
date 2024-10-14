@@ -22,6 +22,7 @@ from forms import (
 )
 from data import (
     Employee,
+    fetch_report_data,
     visitors,
     card,
     update_cards,
@@ -286,44 +287,153 @@ def admin_login():
 def admin_dashboard():
     return render_template("admin_dashboard.html")
 
+# @app.route("/admin/report")
+# @admin_required
+# def admin_report():
+#     all_visitors, _ = display_details()  # Assuming display_details() returns a list of visitors
+
+#     return render_template("admin_report.html", visitors=all_visitors)
+
+# @app.route("/admin/report/export")
+# @admin_required
+# def export_report_csv():
+#     all_visitors, _ = display_details()
+    
+#     # Prepare CSV
+#     csv_data = []
+#     header = ['Name', 'Contact Number', 'Meeting Person', 'Purpose', 'Card No', 'Date Visited', 'Date Left']
+#     csv_data.append(header)
+
+#     for visitor in all_visitors:
+#         row = [
+#             visitor.name,
+#             visitor.contact_number,
+#             visitor.meeting_person,
+#             visitor.purpose,
+#             visitor.Card_no,
+#             visitor.date_visited.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_visited else '',
+#             visitor.date_left.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_left else ''
+#         ]
+#         csv_data.append(row)
+
+#     # Create response
+#     si = StringIO()
+#     writer = csv.writer(si)
+#     writer.writerows(csv_data)
+    
+#     output = make_response(si.getvalue())
+#     output.headers["Content-Disposition"] = "attachment; filename=visitor_report.csv"
+#     output.headers["Content-type"] = "text/csv"
+#     return output
+
 @app.route("/admin/report")
 @admin_required
 def admin_report():
-    all_visitors, _ = display_details()  # Assuming display_details() returns a list of visitors
+    # SQLAlchemy query to fetch data from the visitors table
+    visitors_query = db.session.query(
+        visitors.name.label('identifier'),  # 'identifier' for name or email
+        visitors.Card_no.label('card_no'),
+        visitors.start_date,
+        visitors.end_date,
+        db.literal('Visitor').label('type')  # Add a 'type' column with value 'Visitor'
+    ).all()
+    
+    # SQLAlchemy query to fetch data from the employees table
+    employees_query = db.session.query(
+        Employee.email.label('identifier'),  # 'identifier' for employee email
+        Employee.card_no.label('card_no'),
+        Employee.start_date,
+        Employee.end_date,
+        db.literal('Employee').label('type')  # Add a 'type' column with value 'Employee'
+    ).all()
 
-    return render_template("admin_report.html", visitors=all_visitors)
+    # Combine both visitors and employees into a single list
+    combined_data = visitors_query + employees_query
+
+    # Render the combined data in the admin report
+    return render_template("admin_report.html", report_data=combined_data)
 
 @app.route("/admin/report/export")
 @admin_required
 def export_report_csv():
-    all_visitors, _ = display_details()
+    # SQLAlchemy queries for visitors and employees
+    visitors_query = db.session.query(
+        visitors.name.label('identifier'),
+        visitors.Card_no.label('card_no'),
+        visitors.start_date,
+        visitors.end_date,
+        db.literal('Visitor').label('type')  # Add a 'type' column for visitors
+    ).all()
     
-    # Prepare CSV
+    employees_query = db.session.query(
+        Employee.email.label('identifier'),
+        Employee.card_no.label('card_no'),
+        Employee.start_date,
+        Employee.end_date,
+        db.literal('Employee').label('type')  # Add a 'type' column for employees
+    ).all()
+
+    # Combine the data
+    combined_data = visitors_query + employees_query
+
+    # Prepare CSV with the additional 'Type' column
     csv_data = []
-    header = ['Name', 'Contact Number', 'Meeting Person', 'Purpose', 'Card No', 'Date Visited', 'Date Left']
+    header = ['Name/Email', 'Card No', 'Start Date', 'End Date', 'Type']
     csv_data.append(header)
 
-    for visitor in all_visitors:
-        row = [
-            visitor.name,
-            visitor.contact_number,
-            visitor.meeting_person,
-            visitor.purpose,
-            visitor.Card_no,
-            visitor.date_visited.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_visited else '',
-            visitor.date_left.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_left else ''
-        ]
-        csv_data.append(row)
-
-    # Create response
+    # Add combined data (both visitors and employees) to the CSV
+    for row in combined_data:
+        csv_data.append([
+            row.identifier,
+            row.card_no,
+            row.start_date.strftime("%Y-%m-%d %H:%M:%S") if row.start_date else '',
+            row.end_date.strftime("%Y-%m-%d %H:%M:%S") if row.end_date else '',
+            row.type  # Add the 'type' value
+        ])
+    
+    # Create CSV response
     si = StringIO()
     writer = csv.writer(si)
     writer.writerows(csv_data)
     
     output = make_response(si.getvalue())
-    output.headers["Content-Disposition"] = "attachment; filename=visitor_report.csv"
+    output.headers["Content-Disposition"] = "attachment; filename=report.csv"
     output.headers["Content-type"] = "text/csv"
     return output
 
+
+@app.route('/temp-report', methods=['GET'])
+def temp_report():
+    report_data = fetch_report_data()  # Fetch the combined report data
+    
+    # Temporary rendering of the report data
+    return render_template('temp_report.html', report_data=report_data)
+
+@app.route('/reporting', methods=['GET'])
+def reporting():
+    # SQLAlchemy query to fetch data from both visitors and employees tables
+    visitors_query = db.session.query(
+        visitors.name.label('identifier'),
+        visitors.Card_no,
+        visitors.start_date,  # Ensure this field exists in the visitors model
+        visitors.end_date     # Ensure this field exists in the visitors model
+    ).all()
+    
+    employees_query = db.session.query(
+        Employee.email.label('identifier'),
+        Employee.card_no,
+        Employee.start_date,  # Ensure this field exists in the Employee model
+        Employee.end_date     # Ensure this field exists in the Employee model
+    ).all()
+    
+    # Combine both queries into one list
+    report_data = visitors_query + employees_query
+
+    return render_template('reporting.html', report_data=report_data)
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+

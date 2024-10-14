@@ -1,0 +1,70 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<style>
+    /* Global styles */
+    body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        background-color: #f8f9fa; /* Light background color */
+        padding: 10px;
+    }
+
+    .table-container {
+        margin-top: 40px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background-color: #fff; /* White background for the table */
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for depth */
+    }
+
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd; /* Light gray border */
+    }
+
+    th {
+        background-color: #f2f2f2; /* Light gray background for header cells */
+        font-weight: bold;
+    }
+
+    h1 {
+        margin-bottom: 20px;
+        font-size: 2em; /* Larger font size */
+        color: #333; /* Darker text color */
+        text-align: center; /* Center align heading */
+        text-transform: uppercase; /* Uppercase text */
+    }
+</style>
+
+<h1>Reporting Records</h1>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Name/Email</th>
+                <th>Card No.</th>
+                <th>Entry</th>
+                <th>Exit</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in report_data %}
+            <tr>
+                <td>{{ record.identifier }}</td>
+                <td>{{ record.card_no }}</td>
+                <td>{{ record.start_date.strftime("%Y-%m-%d") if record.start_date else "N/A" }}</td>
+                <td>{{ record.end_date.strftime("%Y-%m-%d") if record.end_date else "N/A" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}
