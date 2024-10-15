@@ -1,27 +1,131 @@
-<a href="{{ url_for('export_report_csv') }}" class="btn btn-primary">Export CSV</a>
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Contact Number</th>
-      <th>Meeting Person</th>
-      <th>Purpose</th>
-      <th>Card No</th>
-      <th>Date Visited</th>
-      <th>Date Left</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for visitor in visitors %}
-    <tr>
-      <td>{{ visitor.name }}</td>
-      <td>{{ visitor.contact_number }}</td>
-      <td>{{ visitor.meeting_person }}</td>
-      <td>{{ visitor.purpose }}</td>
-      <td>{{ visitor.Card_no }}</td>
-      <td>{{ visitor.date_visited }}</td>
-      <td>{{ visitor.date_left }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="content-section">
+    <h2 class="text-center mb-4">Admin Report</h2>
+
+    <!-- Filter and Sort Section -->
+    <form class="mb-4">
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Filter and Sort Options</legend>
+
+            <div class="form-row">
+                <!-- Filter Dropdown by Type -->
+                <div class="form-group col-md-6">
+                    <label for="filterType" class="form-control-label">Filter by Type:</label>
+                    <select class="form-control" id="filterType" onchange="filterByType()">
+                        <option value="all">All</option>
+                        <option value="Employee">Employee</option>
+                        <option value="Visitor">Visitor</option>
+                    </select>
+                </div>
+
+                <!-- Sort Button -->
+                <div class="form-group col-md-6 text-right">
+                    <label for="sortType" class="form-control-label d-block">Sort by Type:</label>
+                    <button type="button" class="btn btn-custom" onclick="sortByType()">Sort</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+    <!-- Report Table -->
+    <table class="table table-striped table-bordered" id="reportTable">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Name/Email</th>
+                <th scope="col">Card No</th>
+                <th scope="col">Start Date and Time</th>
+                <th scope="col">End Date and Time</th>
+                <th scope="col">Type</th> <!-- Type column for Employee or Visitor -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in report_data %}
+            <tr class="report-row" data-type="{{ row.type }}">
+                <td>{{ row.identifier }}</td>
+                <td>{{ row.card_no }}</td>
+                <td>{{ row.start_date.strftime("%Y-%m-%d %H:%M:%S") if row.start_date else '' }}</td>
+                <td>{{ row.end_date.strftime("%Y-%m-%d %H:%M:%S") if row.end_date else '' }}</td>
+                <td>{{ row.type }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="text-center mt-4">
+        <a href="{{ url_for('export_report_csv') }}" class="btn btn-custom">Export Report as CSV</a>
+    </div>
+</div>
+
+<!-- JavaScript for filtering and sorting -->
+<script>
+    // Filter by Type
+    function filterByType() {
+        const filter = document.getElementById('filterType').value;
+        const rows = document.querySelectorAll('.report-row');
+        rows.forEach(row => {
+            if (filter === 'all') {
+                row.style.display = '';
+            } else if (row.getAttribute('data-type') === filter) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Sort by Type
+    function sortByType() {
+        const table = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
+        const rows = Array.from(table.getElementsByTagName('tr'));
+
+        rows.sort((a, b) => {
+            const typeA = a.getAttribute('data-type');
+            const typeB = b.getAttribute('data-type');
+            return typeA.localeCompare(typeB);
+        });
+
+        // Append sorted rows back to the table body
+        rows.forEach(row => table.appendChild(row));
+    }
+</script>
+
+<style>
+    /* Custom styling for consistency with your existing web app */
+    .content-section {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-custom {
+        background-color: #000000;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+    }
+
+    .text-danger {
+        color: #e03e3e; /* Customize the asterisk color */
+    }
+
+    table.table {
+        margin-top: 20px;
+    }
+
+    table.table th, table.table td {
+        text-align: center;
+    }
+</style>
+
+{% endblock content %}

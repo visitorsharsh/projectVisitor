@@ -87,16 +87,9 @@ def submit():
 #Exit Page
 @app.route("/exit", methods=['GET', 'POST'])
 def exit():
-    form = exitform()
-    form.Card_no.choices = get_used_cards()  # Update choices initially
-    if form.validate_on_submit() and form.Card_no.data:
-        change_status(form)
-        flash('Thank you for visiting Fusion. Have a great day!')
-        return redirect(url_for('feedbackpage'))
-    
-    return render_template("exit.html", title='Exit Page', form=form)
+    return redirect(url_for('exit_feedback'))  # Redirect to exit feedback page
 
-
+# Exit Feedback Page (replaces the old exit form)
 @app.route("/exit-feedback", methods=['GET', 'POST'])
 def exit_feedback():
     form = ExitFeedbackForm()

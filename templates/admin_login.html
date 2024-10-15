@@ -1,35 +1,68 @@
-<!-- admin_login.html -->
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h1 class="text-center">Admin Login</h1>
+<div class="content-section">
+    <h1 class="text-center mb-4">Admin Login</h1>
     
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <form method="POST">
-                {{ form.hidden_tag() }}
+    <form method="POST">
+        {{ form.hidden_tag() }}
 
-                <!-- Email Input -->
-                <div class="form-group">
-                    {{ form.email.label(class="form-label") }}
-                    {{ form.email(class="form-control") }}
-                </div>
-
-                <!-- OTP Input (shown after email is verified) -->
-                {% if show_otp %}
-                <div class="form-group">
-                    {{ otp_form.otp.label(class="form-label") }}
-                    {{ otp_form.otp(class="form-control") }}
-                </div>
-                {% endif %}
-
-                <!-- Submit Button -->
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-primary") }}
-                </div>
-            </form>
+        <!-- Email Input -->
+        <div class="form-group">
+            {{ form.email.label(class="form-control-label") }} <span class="text-danger">*</span>
+            {{ form.email(class="form-control form-control-lg", placeholder="Enter your email", required=true) }}
         </div>
-    </div>
+
+        <!-- OTP Input (shown after email is verified) -->
+        {% if show_otp %}
+        <div class="form-group">
+            {{ otp_form.otp.label(class="form-control-label") }} <span class="text-danger">*</span>
+            {{ otp_form.otp(class="form-control form-control-lg", placeholder="Enter OTP sent to your email", required=true) }}
+        </div>
+        {% endif %}
+
+        <!-- Submit Button -->
+        <div class="form-group">
+            {% if show_otp %}
+                {{ otp_form.submit(class="btn btn-custom btn-lg btn-block", value="Submit OTP") }}
+            {% else %}
+                {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Verify Email") }}
+            {% endif %}
+        </div>
+
+        <!-- Mandatory fields message at the bottom -->
+        <p class="text-muted mt-3">
+            <small><span class="text-danger">*</span> Fields are mandatory.</small>
+        </p>
+    </form>
 </div>
+
+<style>
+    .content-section {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-custom {
+        background-color: #000000;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 4px;
+    }
+
+    .btn-custom:hover {
+        background-color: #e04350;
+    }
+
+    .text-danger {
+        color: #e03e3e; /* Customize the asterisk color */
+    }
+</style>
+
 {% endblock %}
