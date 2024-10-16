@@ -145,6 +145,65 @@ def feedbackpage():
     return render_template("feedback.html", form=form)
 
 #Employee Section
+# @app.route("/employee", methods=['GET', 'POST'])
+# def employee():
+#     form = EmployeeEmailForm()
+#     otp_form = OTPForm()
+
+#     # Step 1: Email verification and OTP generation
+#     if form.validate_on_submit() and 'otp_submitted' not in session:
+#         otp = str(random.randint(100000, 999999))  # Generate OTP
+#         session['otp'] = otp
+#         session['email'] = form.email.data
+#         msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
+#         msg.body = f'Your OTP code is {otp}'
+#         mail.send(msg)
+#         flash(f'OTP has been sent to {form.email.data}. Please enter the OTP to verify your email.', 'info')
+#         session['otp_submitted'] = True
+#         return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
+
+#     # Step 2: OTP verification
+#     elif otp_form.validate_on_submit() and 'otp_submitted' in session:
+#         if otp_form.otp.data == session.get('otp'):
+#             flash('Email verified successfully!', 'success')
+#             session.pop('otp')
+#             session.pop('otp_submitted')
+#             return redirect(url_for('employee_card_details', email=session['email']))
+#         else:
+#             flash('Invalid OTP. Please try again.', 'danger')
+#             return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
+    
+#     # Initial load or email submission without OTP request yet
+#     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
+
+# @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
+# def employee_card_details(email):
+#     form = EmployeeCardDetailsForm()
+    
+#     if form.validate_on_submit():
+#         card_type = form.card_type.data
+#         start_date = form.start_date.data
+#         end_date = form.end_date.data
+#         card_no = form.Card_no.data
+#         print(end_date)
+#         # Insert new employee record
+#         new_employee = Employee(
+#             employee_type=card_type,
+#             email=email,  # Email comes from the URL parameter
+#             start_date=start_date,
+#             end_date=end_date,
+#             card_no=card_no
+#         )
+        
+#         # Add to the database session and commit
+#         db.session.add(new_employee)
+#         db.session.commit()
+        
+#         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
+#         return redirect(url_for('home'))
+    
+#     return render_template('employee_card_details.html', form=form, email=email)
+
 @app.route("/employee", methods=['GET', 'POST'])
 def employee():
     form = EmployeeEmailForm()
@@ -166,6 +225,10 @@ def employee():
     elif otp_form.validate_on_submit() and 'otp_submitted' in session:
         if otp_form.otp.data == session.get('otp'):
             flash('Email verified successfully!', 'success')
+            
+            # Capture the exact time when OTP is verified successfully (start time)
+            session['start_time'] = datetime.now()  # Store start time in session
+
             session.pop('otp')
             session.pop('otp_submitted')
             return redirect(url_for('employee_card_details', email=session['email']))
@@ -176,66 +239,35 @@ def employee():
     # Initial load or email submission without OTP request yet
     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
 
+
 @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
 def employee_card_details(email):
     form = EmployeeCardDetailsForm()
     
     if form.validate_on_submit():
         card_type = form.card_type.data
-        start_date = form.start_date.data
+        start_date = datetime.today() # Automatically set start date
+        print(type(start_date))
         end_date = form.end_date.data
+        print(type(end_date))
         card_no = form.Card_no.data
         
         # Insert new employee record
         new_employee = Employee(
             employee_type=card_type,
-            email=email,  # Email comes from the URL parameter
+            email=email,
             start_date=start_date,
             end_date=end_date,
             card_no=card_no
         )
         
-        # Add to the database session and commit
         db.session.add(new_employee)
         db.session.commit()
-        
+        update_cards(form)
         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
-        return redirect(url_for('home'))
+        return redirect(url_for('home'))  # Redirect after successful submission
     
     return render_template('employee_card_details.html', form=form, email=email)
-
-
-# @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
-# def employee_card_details(email):
-#     form = EmployeeCardDetailsForm()
-    
-#     if form.validate_on_submit():
-#         card_type = form.card_type.data
-#         start_date = form.start_date.data
-#         end_date = form.end_date.data
-#         card_no = form.Card_no.data
-        
-#         # Insert new visitor, allowing nullable fields
-#         new_record = visitors(
-#             name=email,  # Email is used as name
-#             contact_number=None,  # Set to None if not provided
-#             meeting_person=None,  # Set to None if not provided
-#             purpose=None,  # Set to None if not provided
-#             date_visited=start_date,
-#             date_left=None,  # Assuming the visitor hasn't left yet
-#             Card_no=card_no,
-#             card_type=card_type,
-#             start_date=start_date,
-#             end_date=end_date
-#         )
-        
-#         db.session.add(new_record)
-#         db.session.commit()
-        
-#         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
-#         return redirect(url_for('home'))
-    
-#     return render_template('employee_card_details.html', form=form, email=email)
 
 #Admin Page
 def admin_required(f):

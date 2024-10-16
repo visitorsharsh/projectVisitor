@@ -70,21 +70,21 @@ class OTPForm(FlaskForm):
     submit = SubmitField('Submit OTP')
 
 class EmployeeCardDetailsForm(FlaskForm):
-    # Use a SelectField for card_type with choices 'FII' and 'Other State'
-    card_type = SelectField('Employee Type', choices=[('FII', 'FII'), ('Other State', 'Other State')], validators=[DataRequired()])
+    # SelectField for card type with predefined choices
+    card_type = SelectField('Employee Type', choices=[('FII', 'FII'), ('Other Region', 'Other Region')], validators=[DataRequired()])
     
-    # Use DateField instead of DateTimeField, and remove time component
-    start_date = DateField('Start Date', format='%Y-%m-%d', default=datetime.today, validators=[DataRequired()])
+    # Removed start_date field since it will be set by the system's exact time after OTP verification
+    # end_date should remain as it needs to be selected by the user
     end_date = DateField('End Date', format='%Y-%m-%d', validators=[DataRequired()])
     
-    # Card_no choices will be dynamically populated from get_unused_cards()
+    # Card_no choices are dynamically populated from get_unused_cards()
     Card_no = SelectField('Card No', choices=[], validators=[DataRequired()])
     
     submit = SubmitField('Submit Details')
     
     def __init__(self, *args, **kwargs):
         super(EmployeeCardDetailsForm, self).__init__(*args, **kwargs)
-        # Populate Card_no choices from get_unused_cards()
+        # Populate Card_no choices dynamically from the available card pool
         self.Card_no.choices = get_unused_cards()
 
 class ExitFeedbackForm(FlaskForm):

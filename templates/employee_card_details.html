@@ -72,11 +72,6 @@ input[type="text"], input[type="number"], select, input[type="date"] {
         </div>
         
         <div class="form-group">
-            {{ form.start_date.label(class="form-control-label") }}
-            {{ form.start_date(class="form-control", readonly=True) }}
-        </div>
-        
-        <div class="form-group">
             {{ form.end_date.label(class="form-control-label") }}
             {{ form.end_date(class="form-control") }}
         </div>
@@ -95,17 +90,23 @@ input[type="text"], input[type="number"], select, input[type="date"] {
 document.addEventListener('DOMContentLoaded', function() {
     var cardTypeField = document.querySelector('[name="card_type"]');
     var endDateField = document.querySelector('[name="end_date"]');
-    var startDateField = document.querySelector('[name="start_date"]');
 
     function adjustEndDateField() {
         if (cardTypeField.value === 'FII') {
-            // Set end_date to start_date and make it readonly
-            endDateField.value = startDateField.value;
+            // Automatically set the end date to the next day
+            var today = new Date();
+            today.setDate(today.getDate() + 1); // Set to next day
+            var yyyy = today.getFullYear();
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // Month format MM
+            var dd = String(today.getDate()).padStart(2, '0'); // Day format DD
+            var nextDay = yyyy + '-' + mm + '-' + dd;
+
+            // Set the end_date value and make it readonly
+            endDateField.value = nextDay;
             endDateField.readOnly = true;
         } else {
-            // Allow end_date to be edited
+            // Allow end_date to be edited for other card types (including Other Region)
             endDateField.readOnly = false;
-            endDateField.value = '';
             setMinEndDate();
         }
     }
@@ -113,10 +114,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function setMinEndDate() {
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
         var yyyy = today.getFullYear();
-        today = yyyy + '-' + mm + '-' + dd; // Format: YYYY-MM-DD
-        endDateField.setAttribute('min', today);
+        var todayFormatted = yyyy + '-' + mm + '-' + dd;
+        endDateField.setAttribute('min', todayFormatted); // Set the minimum date as today
     }
 
     cardTypeField.addEventListener('change', adjustEndDateField);
@@ -138,8 +139,5 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 </style>
 
-<footer class="footer">
-    <p>&copy; 2024 Fusion Global Business Solutions</p>
-</footer>
 
 {% endblock %}

@@ -8,10 +8,10 @@ class card(db.Model):
 class visitors(db.Model):  
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
-    contact_number = db.Column(db.String(10), nullable=True)  # Allows NULL values
-    meeting_person = db.Column(db.String(50), nullable=True)  # Allows NULL values
-    purpose = db.Column(db.String(50), nullable=True)  # Allows NULL values
-    date_visited = db.Column(db.DateTime, nullable=False, default=datetime.utcnow() + timedelta(hours=5, minutes=30))
+    contact_number = db.Column(db.String(10), nullable=True)  
+    meeting_person = db.Column(db.String(50), nullable=True)  
+    purpose = db.Column(db.String(50), nullable=True)  
+    date_visited = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)  # DateTime
     date_left = db.Column(db.DateTime)
     Card_no = db.Column(db.Integer, nullable=False)
     card_type = db.Column(db.String(20), nullable=False)
@@ -19,17 +19,18 @@ class visitors(db.Model):
     end_date = db.Column(db.DateTime, nullable=True)
 
     def __repr__(self):
-        return f"visitors('{self.name}','{self.purpose}',{self.Card_no})"
-
+        return f"visitors('{self.name}', '{self.purpose}', {self.Card_no})"
+    
 class Employee(db.Model):
     __tablename__ = 'employees'
 
     id = db.Column(db.Integer, primary_key=True)
     employee_type = db.Column(db.String(50), nullable=False)  
     email = db.Column(db.String(120), unique=True, nullable=False)  
-    start_date = db.Column(db.Date, nullable=False)  
-    end_date = db.Column(db.Date, nullable=False)  
+    start_date = db.Column(db.DateTime, nullable=False)  
+    end_date = db.Column(db.DateTime, nullable=False)    
     card_no = db.Column(db.String(50), unique=True, nullable=False)  
+    card_status = db.Column(db.String(10), default='busy') 
 
     def __init__(self, employee_type, email, start_date, end_date, card_no):
         self.employee_type = employee_type
@@ -37,7 +38,6 @@ class Employee(db.Model):
         self.start_date = start_date
         self.end_date = end_date
         self.card_no = card_no
-
 
 class Feedback(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -117,8 +117,7 @@ def change_status(form):
 
         visitor = visitors.query.filter_by(Card_no=card_number, date_left=None).first()
         if visitor:
-            visitor.date_left = exit_datetime  # Record exit time
-            # Optional: You can log the exit time separately if needed
+            visitor.date_left = exit_datetime
             db.session.commit()
             return "Exit time noted!"
         return "Visitor not found!"
