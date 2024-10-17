@@ -1,6 +1,6 @@
 import csv
 from init import app, db 
-from flask import Flask, render_template, url_for, flash, redirect, request, session, abort, make_response
+from flask import Flask, render_template, url_for, flash, redirect, request, session, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from functools import wraps
 from flask_mail import Mail, Message
@@ -56,7 +56,7 @@ def home():
 def submit():
     form = visitorform()
     cards = get_unused_cards()
-    print(cards)  # Debugging: Print the cards to ensure they're populated
+    #print(cards)  # Debugging: Print the cards to ensure they're populated
     form.Card_no.choices = cards
     form.Card_no.choices = get_unused_cards() 
   
@@ -80,14 +80,16 @@ def submit():
         update_cards(form)
         flash(f'Visitor {form.name.data} with card number {form.Card_no.data} has entered.', 'success')
         flash('Thank you for your request! Welcome to Fusion.')
+        return jsonify({'success': True})  # JSON response for success
         return redirect(url_for("home"))
+    
     
     return render_template("submit.html", title="Visitor", form=form)
 
 #Exit Page
 @app.route("/exit", methods=['GET', 'POST'])
 def exit():
-    return redirect(url_for('exit_feedback'))  # Redirect to exit feedback page
+    return redirect(url_for('exit_feedback'))
 
 # Exit Feedback Page (replaces the old exit form)
 @app.route("/exit-feedback", methods=['GET', 'POST'])
@@ -116,94 +118,17 @@ def exit_feedback():
             db.session.add(new_feedback)
             db.session.commit()
 
-        flash('Thank you for your feedback and visit!', 'success')
-        return redirect(url_for('home'))
+        # Return JSON response for AJAX
+        return jsonify({'success': True})
 
     return render_template("exit_feedback.html", title='Exit and Feedback', form=form)
-
 
 @app.route("/visitors")
 def display_visitors():
     all_visitors, existing_cards = display_details()
     return render_template("visitors.html", title="Visitor Records", visitors=all_visitors, cards=existing_cards)
 
-#Feedback Page
-@app.route("/feedback", methods=['GET', 'POST'])
-def feedbackpage():
-    form = Feedbackform()
-    if form.validate_on_submit():
-        feedback = Feedback(
-            category1=request.form['service_rating'],
-            category2=request.form['quality_rating'],
-            category3=request.form['support_rating'],
-        )
-        db.session.add(feedback)
-        db.session.commit()
-        flash('Feedback submitted successfully!', 'success')
-        return redirect(url_for('home'))
-    
-    return render_template("feedback.html", form=form)
-
-#Employee Section
-# @app.route("/employee", methods=['GET', 'POST'])
-# def employee():
-#     form = EmployeeEmailForm()
-#     otp_form = OTPForm()
-
-#     # Step 1: Email verification and OTP generation
-#     if form.validate_on_submit() and 'otp_submitted' not in session:
-#         otp = str(random.randint(100000, 999999))  # Generate OTP
-#         session['otp'] = otp
-#         session['email'] = form.email.data
-#         msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
-#         msg.body = f'Your OTP code is {otp}'
-#         mail.send(msg)
-#         flash(f'OTP has been sent to {form.email.data}. Please enter the OTP to verify your email.', 'info')
-#         session['otp_submitted'] = True
-#         return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
-
-#     # Step 2: OTP verification
-#     elif otp_form.validate_on_submit() and 'otp_submitted' in session:
-#         if otp_form.otp.data == session.get('otp'):
-#             flash('Email verified successfully!', 'success')
-#             session.pop('otp')
-#             session.pop('otp_submitted')
-#             return redirect(url_for('employee_card_details', email=session['email']))
-#         else:
-#             flash('Invalid OTP. Please try again.', 'danger')
-#             return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
-    
-#     # Initial load or email submission without OTP request yet
-#     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
-
-# @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
-# def employee_card_details(email):
-#     form = EmployeeCardDetailsForm()
-    
-#     if form.validate_on_submit():
-#         card_type = form.card_type.data
-#         start_date = form.start_date.data
-#         end_date = form.end_date.data
-#         card_no = form.Card_no.data
-#         print(end_date)
-#         # Insert new employee record
-#         new_employee = Employee(
-#             employee_type=card_type,
-#             email=email,  # Email comes from the URL parameter
-#             start_date=start_date,
-#             end_date=end_date,
-#             card_no=card_no
-#         )
-        
-#         # Add to the database session and commit
-#         db.session.add(new_employee)
-#         db.session.commit()
-        
-#         flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
-#         return redirect(url_for('home'))
-    
-#     return render_template('employee_card_details.html', form=form, email=email)
-
+# Employee Section
 @app.route("/employee", methods=['GET', 'POST'])
 def employee():
     form = EmployeeEmailForm()
@@ -217,7 +142,10 @@ def employee():
         msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
         msg.body = f'Your OTP code is {otp}'
         mail.send(msg)
-        flash(f'OTP has been sent to {form.email.data}. Please enter the OTP to verify your email.', 'info')
+        
+        # Flash message for OTP sent
+        flash('OTP Sent Successfully', 'info')
+        
         session['otp_submitted'] = True
         return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
 
@@ -227,7 +155,7 @@ def employee():
             flash('Email verified successfully!', 'success')
             
             # Capture the exact time when OTP is verified successfully (start time)
-            session['start_time'] = datetime.now()  # Store start time in session
+            session['start_time'] = datetime.now()
 
             session.pop('otp')
             session.pop('otp_submitted')
@@ -236,9 +164,7 @@ def employee():
             flash('Invalid OTP. Please try again.', 'danger')
             return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
     
-    # Initial load or email submission without OTP request yet
     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
-
 
 @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
 def employee_card_details(email):
@@ -311,45 +237,6 @@ def admin_login():
 @admin_required
 def admin_dashboard():
     return render_template("admin_dashboard.html")
-
-# @app.route("/admin/report")
-# @admin_required
-# def admin_report():
-#     all_visitors, _ = display_details()  # Assuming display_details() returns a list of visitors
-
-#     return render_template("admin_report.html", visitors=all_visitors)
-
-# @app.route("/admin/report/export")
-# @admin_required
-# def export_report_csv():
-#     all_visitors, _ = display_details()
-    
-#     # Prepare CSV
-#     csv_data = []
-#     header = ['Name', 'Contact Number', 'Meeting Person', 'Purpose', 'Card No', 'Date Visited', 'Date Left']
-#     csv_data.append(header)
-
-#     for visitor in all_visitors:
-#         row = [
-#             visitor.name,
-#             visitor.contact_number,
-#             visitor.meeting_person,
-#             visitor.purpose,
-#             visitor.Card_no,
-#             visitor.date_visited.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_visited else '',
-#             visitor.date_left.strftime("%Y-%m-%d %H:%M:%S") if visitor.date_left else ''
-#         ]
-#         csv_data.append(row)
-
-#     # Create response
-#     si = StringIO()
-#     writer = csv.writer(si)
-#     writer.writerows(csv_data)
-    
-#     output = make_response(si.getvalue())
-#     output.headers["Content-Disposition"] = "attachment; filename=visitor_report.csv"
-#     output.headers["Content-type"] = "text/csv"
-#     return output
 
 @app.route("/admin/report")
 @admin_required

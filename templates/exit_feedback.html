@@ -71,7 +71,6 @@
         color: #FECE31;
     }
 
-    /* Submit button styles */
     .btn-custom {
         color: #ffffff;
         background-color: #000000;
@@ -88,7 +87,7 @@
     }
 </style>
 
-<form method="POST" action="">
+<form id="exit-feedback-form" method="POST" action="">
     {{ form.hidden_tag() }}
     <div class="form-container">
         <!-- Card No Dropdown -->
@@ -172,4 +171,32 @@
         </div>
     </div>
 </form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('exit-feedback-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            var form = this;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            
+            var formData = new FormData(form);
+            xhr.send(new URLSearchParams(formData).toString());
+
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        alert("Thanks for Visiting Us!"); // Show success prompt
+                        window.location.href = "{{ url_for('home') }}"; // Redirect to home page
+                    }
+                }
+            };
+        });
+    });
+</script>
+
 {% endblock content %}

@@ -86,7 +86,7 @@
 </style>
 
 <div class="content-section">
-    <form method="POST" action="">
+    <form method="POST" action="" id="visitor-form">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Enter your details</legend>
@@ -203,9 +203,35 @@
                 goodsDetails.style.display = 'none';   // Hide fields if unchecked
             }
         });
+
+        // AJAX form submission
+        document.getElementById('visitor-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent normal form submission
+
+            var form = this;
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    if (response.success) {
+                        // Show success message and redirect on OK click
+                        alert("Success!");
+                        window.location.href = "{{ url_for('home') }}"; // Redirect to the desired page
+                    }
+                }
+            };
+
+            // Collect form data
+            var formData = new FormData(form);
+            var queryString = new URLSearchParams(formData).toString();
+
+            xhr.send(queryString); // Send the form data
+        });
     });
 </script>
-
 
 <style>
     /* Footer styling */

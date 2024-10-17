@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+
 {% block content %}
 <style>
 /* Global styles */
@@ -63,6 +64,20 @@ input[type="text"], input[type="number"], select, input[type="date"] {
 
 <div class="content-section">
     <h1>Card Details for {{ email }}</h1>
+
+    <!-- Display flash messages (Success message when form is submitted) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="alert-section">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
     <form method="POST">
         {{ form.hidden_tag() }}
         
@@ -138,6 +153,5 @@ document.addEventListener('DOMContentLoaded', function() {
     border-top: 1px solid #ccc;
 }
 </style>
-
 
 {% endblock %}

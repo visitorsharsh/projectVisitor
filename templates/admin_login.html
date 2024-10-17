@@ -3,14 +3,25 @@
 {% block content %}
 <div class="content-section">
     <h1 class="text-center mb-4">Admin Login</h1>
-    
-    <form method="POST">
+
+    <!-- Display flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <form method="POST" id="admin-login-form" onsubmit="return validateEmail()">
         {{ form.hidden_tag() }}
 
         <!-- Email Input -->
         <div class="form-group">
             {{ form.email.label(class="form-control-label") }} <span class="text-danger">*</span>
-            {{ form.email(class="form-control form-control-lg", placeholder="Enter your email", required=true) }}
+            {{ form.email(class="form-control form-control-lg", placeholder="Enter your email", id="admin-email", required=true) }}
         </div>
 
         <!-- OTP Input (shown after email is verified) -->
@@ -36,6 +47,21 @@
         </p>
     </form>
 </div>
+
+<!-- JavaScript to validate email input -->
+<script>
+    function validateEmail() {
+        const validEmail = 'hashclg@gmail.com';  // Admin's valid email
+        const emailInput = document.getElementById('admin-email').value;
+
+        if (emailInput !== validEmail) {
+            alert('Enter a valid email');  // Show prompt if email is not valid
+            return false;  // Prevent form submission
+        }
+
+        return true;  // Allow form submission if email is valid
+    }
+</script>
 
 <style>
     .content-section {
@@ -65,4 +91,4 @@
     }
 </style>
 
-{% endblock %}
+{% endblock content %}
