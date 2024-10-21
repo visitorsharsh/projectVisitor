@@ -173,8 +173,10 @@ def employee_card_details(email):
     
     if form.validate_on_submit():
         card_type = form.card_type.data
-        start_date = datetime.today()  # Automatically set start date
+        start_date = datetime.today() # Automatically set start date
+        print(type(start_date))
         end_date = form.end_date.data
+        print(type(end_date))
         card_no = form.Card_no.data
         
         # Insert new employee record
@@ -189,8 +191,8 @@ def employee_card_details(email):
         db.session.add(new_employee)
         db.session.commit()
         update_cards(form)
-        
-        flash(f'Card Issued Successfully! Card number {card_no} for {card_type} from {start_date.strftime("%Y-%m-%d")} to {end_date.strftime("%Y-%m-%d")}.', 'success')
+        flash('Card Issued Successfully, Enjoy the Visit', 'success')
+        #flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
         return redirect(url_for('home'))  # Redirect after successful submission
     
     return render_template('employee_card_details.html', form=form, email=email)
@@ -275,7 +277,7 @@ def admin_report():
 
 
     # Render the combined data in the admin report
-    return render_template("admin_report.html", report_data=paginated_data, page=page, total_pages=total_pages)
+    return render_template("admin_report.html",report_data=paginated_data, page=page, total_pages=total_pages)
 
 @app.route("/admin/report/export")
 @admin_required

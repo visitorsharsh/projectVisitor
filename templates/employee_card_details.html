@@ -78,7 +78,7 @@ input[type="text"], input[type="number"], select, input[type="date"] {
         {% endif %}
     {% endwith %}
 
-    <form method="POST">
+    <form method="POST" id="cardDetailsForm">
         {{ form.hidden_tag() }}
         
         <div class="form-group">
@@ -101,8 +101,18 @@ input[type="text"], input[type="number"], select, input[type="date"] {
 </div>
 
 <script>
-// JavaScript to adjust the end_date field based on card_type selection
+// JavaScript to show prompt and submit form
 document.addEventListener('DOMContentLoaded', function() {
+    var form = document.getElementById('cardDetailsForm');
+    
+    form.addEventListener('submit', function(event) {
+        // Show prompt message
+        alert('Card Issued Successfully, Enjoy the Visit');
+        
+        // Allow the form to submit naturally after the alert
+    });
+
+    // JavaScript to adjust the end_date field based on card_type selection
     var cardTypeField = document.querySelector('[name="card_type"]');
     var endDateField = document.querySelector('[name="end_date"]');
 
@@ -148,8 +158,9 @@ document.addEventListener('DOMContentLoaded', function() {
     background-color: #f8f9fa;
     color: #333;
     font-size: 0.9em;
-    position: relative;
-    margin-top: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
     border-top: 1px solid #ccc;
 }
 </style>

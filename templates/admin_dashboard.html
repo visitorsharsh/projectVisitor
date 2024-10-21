@@ -2,12 +2,12 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <div class="container mt-4" style="height: 300px;">
-        <h1 class="text-center">Admin Dashboard</h1>
-        <p>Manage visitor data and other admin functionalities from here.</p>
+    <div class="container mt-4" style="min-height: 100vh;">
+        <h1 class="text-center display-4 mt-5" style="color: white;">Admin Dashboard</h1>
+        <p class="text-center" style="color: white;">Manage visitor data and other admin functionalities from here.</p>
 
         <!-- Add the specific functionalities below -->
-        <div class="admin-functions">
+        <div class="admin-functions mt-4">
             <ul class="list-group">
                 <li class="list-group-item">
                     <a href="{{ url_for('admin_report') }}">View Visitor Report</a>
