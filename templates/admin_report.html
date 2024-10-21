@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="content-section">
+<div class="content-section" style="width: 150%;">
     <h2 class="text-center mb-4">Admin Report</h2>
 
     <!-- Filter and Sort Section -->
@@ -37,7 +37,7 @@
                 <th scope="col">Card No</th>
                 <th scope="col">Start Date and Time</th>
                 <th scope="col">End Date and Time</th>
-                <th scope="col">Type</th> <!-- Type column for Employee or Visitor -->
+                <th scope="col">Type</th>
             </tr>
         </thead>
         <tbody>
@@ -55,6 +55,19 @@
 
     <div class="text-center mt-4">
         <a href="{{ url_for('export_report_csv') }}" class="btn btn-custom">Export Report as CSV</a>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination mt-4">
+        {% if page > 1 %}
+            <a href="{{ url_for('admin_report', page=page - 1) }}" class="btn btn-custom">Previous</a>
+        {% endif %}
+        
+        <span>Page {{ page }} of {{ total_pages }}</span>
+        
+        {% if page < total_pages %}
+            <a href="{{ url_for('admin_report', page=page + 1) }}" class="btn btn-custom">Next</a>
+        {% endif %}
     </div>
 </div>
 
@@ -100,7 +113,7 @@
         border: 1px solid #ccc;
         border-radius: 8px;
         background-color: #fff;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .btn-custom {
@@ -109,14 +122,11 @@
         padding: 12px 24px;
         border: none;
         border-radius: 4px;
+        text-decoration: none;
     }
 
     .btn-custom:hover {
         background-color: #e04350;
-    }
-
-    .text-danger {
-        color: #e03e3e; /* Customize the asterisk color */
     }
 
     table.table {
@@ -125,6 +135,14 @@
 
     table.table th, table.table td {
         text-align: center;
+    }
+
+    .pagination {
+        margin-top: 20px;
+    }
+
+    .pagination a {
+        margin: 0 10px;
     }
 </style>
 

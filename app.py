@@ -1,4 +1,5 @@
 import csv
+from math import ceil
 from init import app, db 
 from flask import Flask, render_template, url_for, flash, redirect, request, session, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -172,10 +173,8 @@ def employee_card_details(email):
     
     if form.validate_on_submit():
         card_type = form.card_type.data
-        start_date = datetime.today() # Automatically set start date
-        print(type(start_date))
+        start_date = datetime.today()  # Automatically set start date
         end_date = form.end_date.data
-        print(type(end_date))
         card_no = form.Card_no.data
         
         # Insert new employee record
@@ -190,7 +189,8 @@ def employee_card_details(email):
         db.session.add(new_employee)
         db.session.commit()
         update_cards(form)
-        flash(f'Card number {card_no} for {card_type} used from {start_date} to {end_date}.', 'success')
+        
+        flash(f'Card Issued Successfully! Card number {card_no} for {card_type} from {start_date.strftime("%Y-%m-%d")} to {end_date.strftime("%Y-%m-%d")}.', 'success')
         return redirect(url_for('home'))  # Redirect after successful submission
     
     return render_template('employee_card_details.html', form=form, email=email)
@@ -262,8 +262,20 @@ def admin_report():
     # Combine both visitors and employees into a single list
     combined_data = visitors_query + employees_query
 
+    # Pagination logic
+    page = request.args.get('page', 1, type=int)
+    per_page = 10
+    total = len(combined_data)
+    
+    start = (page - 1) * per_page
+    end = start + per_page
+    paginated_data = combined_data[start:end]
+    
+    total_pages = ceil(total / per_page)
+
+
     # Render the combined data in the admin report
-    return render_template("admin_report.html", report_data=combined_data)
+    return render_template("admin_report.html", report_data=paginated_data, page=page, total_pages=total_pages)
 
 @app.route("/admin/report/export")
 @admin_required

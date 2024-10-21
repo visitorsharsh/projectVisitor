@@ -20,13 +20,12 @@
             background-color: #f8f9fa;
             color: #333;
             padding-top: 80px;
-            background-image: url("{{ url_for('static', filename='background.png') }}");
+            background-image: url("{{ url_for('static', filename='Picture1.png') }}");
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;
             background-position: center center;
             min-height: 100vh;
-            margin-bottom: -50px;
         }
 
         /* Navbar styles */
@@ -63,40 +62,39 @@
             color: #333;
             padding: 10px 20px;
             text-align: center;
-            position: relative;
+            position: fixed;
             width: 100%;
             bottom: 0;
             left: 0;
             z-index: 1000;
         }
 
-        /* Responsive adjustments */
+        /* Image styling */
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            height: 400px;
+            width: 280px;
+        }
+
+        /* Center content in middle column */
+        .middle-content {
+            display: flex;
+            justify-content: center;
+            width: 4000px;
+            align-items: center;
+        }
+
+        /* Optional: Responsive adjustments */
         @media (max-width: 768px) {
-            .text-right p {
-                font-size: 16px; /* Adjust for smaller devices */
+            .image-container img {
+                height: 300px;
+                width: 210px;
             }
-        }
-
-        @media (min-width: 768px) and (max-width: 1024px) {
-            .text-right p {
-                font-size: 18px; /* Suitable for tablets */
-            }
-        }
-
-        /* Image responsiveness */
-        img {
-            max-width: 100%; /* Ensure images don't overflow their container */
-            height: auto; /* Maintain aspect ratio */
-        }
-
-        /* Styling the text on the right side */
-        .text-right p {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 20px;
-            color: #666;
-            line-height: 1.6;
-            margin-top: 20px;
-            text-align: justify;
         }
     </style>
 </head>
@@ -105,6 +103,7 @@
         <nav class="navbar navbar-expand-md navbar-dark fixed-top">
             <div class="container">
                 <a class="navbar-brand" href="/">
+                    <img src="{{ url_for('static', filename='Another.png') }}" alt="Logo" style="width: 40px; height: auto;">
                     <img src="{{ url_for('static', filename='fusion-logo-black.svg') }}" alt="Logo" style="width: 120px; height: auto;">
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,15 +121,21 @@
 
     <main role="main" class="container site-main">
         <div class="row">
-            <div class="col-md-8">
+            <!-- Left Image Column (smaller)
+            <div class="col-md-3 image-container">
+                <img src="{{ url_for('static', filename='Another.png') }}" alt="Award Image">
+            </div> -->
+
+            <!-- Middle Content Column (wider) -->
+            <div class="col-md-10 middle-content" style="width: 500px;">
                 {% with messages = get_flashed_messages(with_categories=True) %}{% endwith %}
                 {% block content %}{% endblock %}
             </div>
-            <div class="col-md-4">
-                <div class="text-right">
-                    <img src="{{ url_for('static', filename='Another.png') }}" alt="Award Image">
-                </div>
-            </div>
+
+            <!-- Right Image Column (smaller) 
+            <div class="col-md-3 image-container">
+                <img src="{{ url_for('static', filename='Another.png') }}" alt="Award Image">
+            </div>-->
         </div>
     </main>
 
