@@ -1,5 +1,6 @@
 import csv
 from math import ceil
+from operator import itemgetter
 from init import app, db 
 from flask import Flask, render_template, url_for, flash, redirect, request, session, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -240,44 +241,87 @@ def admin_login():
 def admin_dashboard():
     return render_template("admin_dashboard.html")
 
+# @app.route("/admin/report")
+# @admin_required
+# def admin_report():
+#     # SQLAlchemy query to fetch data from the visitors table
+#     visitors_query = db.session.query(
+#         visitors.name.label('identifier'),  # 'identifier' for name or email
+#         visitors.Card_no.label('card_no'),
+#         visitors.start_date,
+#         visitors.end_date,
+#         db.literal('Visitor').label('type')  # Add a 'type' column with value 'Visitor'
+#     ).all()
+    
+#     # SQLAlchemy query to fetch data from the employees table
+#     employees_query = db.session.query(
+#         Employee.email.label('identifier'),  # 'identifier' for employee email
+#         Employee.card_no.label('card_no'),
+#         Employee.start_date,
+#         Employee.end_date,
+#         db.literal('Employee').label('type')  # Add a 'type' column with value 'Employee'
+#     ).all()
+
+#     # Combine both visitors and employees into a single list
+#     combined_data = visitors_query + employees_query
+
+#     # Pagination logic
+#     page = request.args.get('page', 1, type=int)
+#     per_page = 10
+#     total = len(combined_data)
+    
+#     start = (page - 1) * per_page
+#     end = start + per_page
+#     paginated_data = combined_data[start:end]
+    
+#     total_pages = ceil(total / per_page)
+
+
+#     # Render the combined data in the admin report
+#     return render_template("admin_report.html",report_data=paginated_data, page=page, total_pages=total_pages)
+
 @app.route("/admin/report")
 @admin_required
 def admin_report():
-    # SQLAlchemy query to fetch data from the visitors table
+    # SQLAlchemy queries to fetch visitors and employees
     visitors_query = db.session.query(
-        visitors.name.label('identifier'),  # 'identifier' for name or email
+        visitors.name.label('identifier'),
         visitors.Card_no.label('card_no'),
         visitors.start_date,
         visitors.end_date,
-        db.literal('Visitor').label('type')  # Add a 'type' column with value 'Visitor'
+        db.literal('Visitor').label('type')
     ).all()
-    
-    # SQLAlchemy query to fetch data from the employees table
+
     employees_query = db.session.query(
-        Employee.email.label('identifier'),  # 'identifier' for employee email
+        Employee.email.label('identifier'),
         Employee.card_no.label('card_no'),
         Employee.start_date,
         Employee.end_date,
-        db.literal('Employee').label('type')  # Add a 'type' column with value 'Employee'
+        db.literal('Employee').label('type')
     ).all()
 
     # Combine both visitors and employees into a single list
     combined_data = visitors_query + employees_query
 
+    # Sorting Logic (default: descending)
+    sort_order = request.args.get('sort', 'desc')
+    reverse_sort = True if sort_order == 'desc' else False
+
+    # Sort by 'start_date' (3rd element in the tuple)
+    combined_data.sort(key=lambda x: x[2], reverse=reverse_sort)
+
     # Pagination logic
     page = request.args.get('page', 1, type=int)
     per_page = 10
     total = len(combined_data)
-    
+
     start = (page - 1) * per_page
     end = start + per_page
     paginated_data = combined_data[start:end]
-    
+
     total_pages = ceil(total / per_page)
 
-
-    # Render the combined data in the admin report
-    return render_template("admin_report.html",report_data=paginated_data, page=page, total_pages=total_pages)
+    return render_template("admin_report.html", report_data=paginated_data, page=page, total_pages=total_pages, sort_order=sort_order)
 
 @app.route("/admin/report/export")
 @admin_required
@@ -327,35 +371,6 @@ def export_report_csv():
     output.headers["Content-type"] = "text/csv"
     return output
 
-
-@app.route('/temp-report', methods=['GET'])
-def temp_report():
-    report_data = fetch_report_data()  # Fetch the combined report data
-    
-    # Temporary rendering of the report data
-    return render_template('temp_report.html', report_data=report_data)
-
-@app.route('/reporting', methods=['GET'])
-def reporting():
-    # SQLAlchemy query to fetch data from both visitors and employees tables
-    visitors_query = db.session.query(
-        visitors.name.label('identifier'),
-        visitors.Card_no,
-        visitors.start_date,  # Ensure this field exists in the visitors model
-        visitors.end_date     # Ensure this field exists in the visitors model
-    ).all()
-    
-    employees_query = db.session.query(
-        Employee.email.label('identifier'),
-        Employee.card_no,
-        Employee.start_date,  # Ensure this field exists in the Employee model
-        Employee.end_date     # Ensure this field exists in the Employee model
-    ).all()
-    
-    # Combine both queries into one list
-    report_data = visitors_query + employees_query
-
-    return render_template('reporting.html', report_data=report_data)
 
 
 if __name__ == "__main__":

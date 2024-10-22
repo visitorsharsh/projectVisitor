@@ -20,10 +20,12 @@
                     </select>
                 </div>
 
-                <!-- Sort Button -->
+                <!-- Sort by Start Date Button -->
                 <div class="form-group col-md-6 text-right">
-                    <label for="sortType" class="form-control-label d-block">Sort by Type:</label>
-                    <button type="button" class="btn btn-custom" onclick="sortByType()">Sort</button>
+                    <label for="sortStartDate" class="form-control-label d-block">Sort by Start Date:</label>
+                    <button type="button" class="btn btn-custom" onclick="sortByDate()">
+                        Sort by Date ({{ 'Descending' if sort_order == 'desc' else 'Ascending' }})
+                    </button>
                 </div>
             </div>
         </fieldset>
@@ -60,13 +62,13 @@
     <!-- Pagination Controls -->
     <div class="pagination mt-4">
         {% if page > 1 %}
-            <a href="{{ url_for('admin_report', page=page - 1) }}" class="btn btn-custom">Previous</a>
+            <a href="{{ url_for('admin_report', page=page - 1, sort=sort_order) }}" class="btn btn-custom">Previous</a>
         {% endif %}
         
         <span>Page {{ page }} of {{ total_pages }}</span>
         
         {% if page < total_pages %}
-            <a href="{{ url_for('admin_report', page=page + 1) }}" class="btn btn-custom">Next</a>
+            <a href="{{ url_for('admin_report', page=page + 1, sort=sort_order) }}" class="btn btn-custom">Next</a>
         {% endif %}
     </div>
 </div>
@@ -88,19 +90,16 @@
         });
     }
 
-    // Sort by Type
-    function sortByType() {
-        const table = document.getElementById('reportTable').getElementsByTagName('tbody')[0];
-        const rows = Array.from(table.getElementsByTagName('tr'));
-
-        rows.sort((a, b) => {
-            const typeA = a.getAttribute('data-type');
-            const typeB = b.getAttribute('data-type');
-            return typeA.localeCompare(typeB);
-        });
-
-        // Append sorted rows back to the table body
-        rows.forEach(row => table.appendChild(row));
+    // Sort by Start Date
+    function sortByDate() {
+        const currentUrl = new URL(window.location.href);
+        const currentSort = currentUrl.searchParams.get('sort');
+        
+        // Toggle between 'asc' and 'desc'
+        const newSort = currentSort === 'asc' ? 'desc' : 'asc';
+        
+        currentUrl.searchParams.set('sort', newSort);  // Set the new sort order
+        window.location.href = currentUrl.toString();  // Reload the page with the new sort order
     }
 </script>
 
