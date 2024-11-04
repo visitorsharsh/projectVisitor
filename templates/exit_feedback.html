@@ -93,7 +93,13 @@
         <!-- Card No Dropdown -->
         <div class="form-group">
             {{ form.Card_no.label(class="form-control-label") }}
-            {{ form.Card_no(class="form-control") }}
+            {{ form.Card_no(class="form-control", required=True) }}
+        </div>
+
+        <!-- Card Holder Name Display -->
+        <div class="form-group">
+            <label class="form-control-label">Card Holder Name</label>
+            <input type="text" id="card_holder_name" class="form-control" readonly>
         </div>
 
         <!-- Professionalism Star Rating -->
@@ -174,24 +180,35 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        document.getElementById('exit-feedback-form').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+        // AJAX to get card holder name
+        document.querySelector('#Card_no').addEventListener('change', function() {
+            const cardNo = this.value;
+            fetch(`/get_card_holder_name/${cardNo}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.querySelector('#card_holder_name').value = data.card_holder_name;
+                });
+        });
 
-            var form = this;
-            var xhr = new XMLHttpRequest();
+        // AJAX form submission
+        document.getElementById('exit-feedback-form').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const form = this;
+            const xhr = new XMLHttpRequest();
             xhr.open('POST', form.action, true);
             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             
-            var formData = new FormData(form);
+            const formData = new FormData(form);
             xhr.send(new URLSearchParams(formData).toString());
 
             xhr.onload = function () {
                 if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
+                    const response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        alert("Thanks for Visiting Us!"); // Show success prompt
-                        window.location.href = "{{ url_for('home') }}"; // Redirect to home page
+                        alert("Thanks for Visiting Us!");
+                        window.location.href = "{{ url_for('home') }}";
                     }
                 }
             };

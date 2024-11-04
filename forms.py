@@ -90,7 +90,7 @@ class EmployeeCardDetailsForm(FlaskForm):
 class ExitFeedbackForm(FlaskForm):
     # Card No dropdown, required
     Card_no = SelectField('Card No', choices=[], validators=[DataRequired()])
-
+    card_holder_name = StringField('Card Holder', render_kw={'readonly': True})  # Read-only field for the name
     # Rating fields for feedback (optional)
     professionalism = RadioField('Professionalism', choices=[('1', '★'), ('2', '★★'), ('3', '★★★'), ('4', '★★★★'), ('5', '★★★★★')], validators=[Optional()])
     hospitality = RadioField('Hospitality', choices=[('1', '★'), ('2', '★★'), ('3', '★★★'), ('4', '★★★★'), ('5', '★★★★★')], validators=[Optional()])
@@ -105,4 +105,5 @@ class ExitFeedbackForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super(ExitFeedbackForm, self).__init__(*args, **kwargs)
         # Populate Card_no choices dynamically
-        self.Card_no.choices = get_used_cards()
+        #self.Card_no.choices = get_used_cards()
+        self.Card_no.choices = [('', 'Select Card No')] + get_used_cards()

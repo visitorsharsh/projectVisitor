@@ -126,6 +126,23 @@ def exit_feedback():
 
     return render_template("exit_feedback.html", title='Exit and Feedback', form=form)
 
+@app.route("/get_card_holder_name/<card_no>")
+def get_card_holder_name(card_no):
+    # Query the database to find the card holder's name based on the card number
+    visitor = db.session.query(visitors).filter_by(Card_no=card_no).first()
+    employee = db.session.query(Employee).filter_by(card_no=card_no).first()
+    
+    # Determine if it's a visitor or an employee
+    if visitor:
+        card_holder_name = visitor.name
+    elif employee:
+        card_holder_name = employee.email  # Use email for employees, assuming that's the identifier
+    else:
+        card_holder_name = "Unknown"
+
+    return jsonify({'card_holder_name': card_holder_name})
+
+
 @app.route("/visitors")
 def display_visitors():
     all_visitors, existing_cards = display_details()
