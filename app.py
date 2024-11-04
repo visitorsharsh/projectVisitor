@@ -1,6 +1,7 @@
 import csv
 from math import ceil
 from operator import itemgetter
+import re
 from init import app, db 
 from flask import Flask, render_template, url_for, flash, redirect, request, session, abort, make_response, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -134,39 +135,73 @@ def display_visitors():
 @app.route("/employee", methods=['GET', 'POST'])
 def employee():
     form = EmployeeEmailForm()
-    otp_form = OTPForm()
 
-    # Step 1: Email verification and OTP generation
-    if form.validate_on_submit() and 'otp_submitted' not in session:
-        otp = str(random.randint(100000, 999999))  # Generate OTP
-        session['otp'] = otp
-        session['email'] = form.email.data
-        msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
-        msg.body = f'Your OTP code is {otp}'
-        mail.send(msg)
-        
-        # Flash message for OTP sent
-        flash('OTP Sent Successfully', 'info')
-        
-        session['otp_submitted'] = True
-        return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
+    if form.validate_on_submit():
+        email = form.email.data
 
-    # Step 2: OTP verification
-    elif otp_form.validate_on_submit() and 'otp_submitted' in session:
-        if otp_form.otp.data == session.get('otp'):
-            flash('Email verified successfully!', 'success')
-            
-            # Capture the exact time when OTP is verified successfully (start time)
-            session['start_time'] = datetime.now()
-
-            session.pop('otp')
-            session.pop('otp_submitted')
-            return redirect(url_for('employee_card_details', email=session['email']))
+        # Validate the email domain
+        if re.match(r'^[\w\.-]+@fusiongbs\.com$', email):
+            session['email'] = email
+            flash('Email validated successfully!', 'success')
+            return redirect(url_for('employee_card_details', email=email))
         else:
-            flash('Invalid OTP. Please try again.', 'danger')
-            return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
+            flash('Invalid email domain. Please use @fusiongbs.com', 'danger')
+
+    return render_template('employee.html', form=form)
+
+# @app.route("/employee", methods=['GET', 'POST'])
+# def employee():
+#     form = EmployeeEmailForm()
+
+#     if form.validate_on_submit():
+#         email = form.email.data
+
+#         # Validate the email domain
+#         if re.match(r'^[\w\.-]+@fusiongbs\.com$', email):
+#             session['email'] = email
+#             flash('Email validated successfully!', 'success')
+#             return redirect(url_for('employee_card_details', email=email))
+#         else:
+#             flash('Invalid email domain. Please use @fusiongbs.com', 'danger')
+
+#     return render_template('employee.html', form=form)
+
+# @app.route("/employee", methods=['GET', 'POST'])
+# def employee():
+#     form = EmployeeEmailForm()
+#     otp_form = OTPForm()
+
+#     # Step 1: Email verification and OTP generation
+#     if form.validate_on_submit() and 'otp_submitted' not in session:
+#         otp = str(random.randint(100000, 999999))  # Generate OTP
+#         session['otp'] = otp
+#         session['email'] = form.email.data
+#         msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
+#         msg.body = f'Your OTP code is {otp}'
+#         mail.send(msg)
+        
+#         # Flash message for OTP sent
+#         flash('OTP Sent Successfully', 'info')
+        
+#         session['otp_submitted'] = True
+#         return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
+
+#     # Step 2: OTP verification
+#     elif otp_form.validate_on_submit() and 'otp_submitted' in session:
+#         if otp_form.otp.data == session.get('otp'):
+#             flash('Email verified successfully!', 'success')
+            
+#             # Capture the exact time when OTP is verified successfully (start time)
+#             session['start_time'] = datetime.now()
+
+#             session.pop('otp')
+#             session.pop('otp_submitted')
+#             return redirect(url_for('employee_card_details', email=session['email']))
+#         else:
+#             flash('Invalid OTP. Please try again.', 'danger')
+#             return render_template('employee.html', form=form, otp_form=otp_form, show_otp=True)
     
-    return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
+#     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
 
 @app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
 def employee_card_details(email):
@@ -199,10 +234,11 @@ def employee_card_details(email):
     return render_template('employee_card_details.html', form=form, email=email)
 
 #Admin Page
+
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        if session.get('email') != 'hashclg@gmail.com':  # Replace with the actual admin email
+        if session.get('email') != 'admin@fusiongbs.com':  # Updated to the new admin email
             abort(403)  # Forbidden access if email is not admin
         return f(*args, **kwargs)
     return decorated_function
@@ -210,75 +246,61 @@ def admin_required(f):
 @app.route("/admin/login", methods=['GET', 'POST'])
 def admin_login():
     form = EmployeeEmailForm()  # Assuming you want to use email form already defined
-    otp_form = OTPForm()
 
-    if form.validate_on_submit() and 'otp_submitted' not in session:
-        if form.email.data == 'hashclg@gmail.com':  # Restrict login to only this email
-            otp = str(random.randint(100000, 999999))  # Generate OTP
-            session['otp'] = otp
-            session['email'] = form.email.data
-            msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
-            msg.body = f'Your OTP code is {otp}'
-            mail.send(msg)
-            flash(f'OTP sent to {form.email.data}. Please enter it to verify.', 'info')
-            session['otp_submitted'] = True
-            return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=True)
-
-    elif otp_form.validate_on_submit() and 'otp_submitted' in session:
-        if otp_form.otp.data == session.get('otp'):
+    if form.validate_on_submit():
+        if form.email.data == 'admin@fusiongbs.com':  # Restrict login to only this email
+            session['email'] = form.email.data  # Store the admin email in the session
             flash('Login successful!', 'success')
-            session.pop('otp')
-            session.pop('otp_submitted')
-            return redirect(url_for('admin_dashboard'))
+            return redirect(url_for('admin_dashboard'))  # Redirect to the dashboard
         else:
-            flash('Invalid OTP. Please try again.', 'danger')
-            return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=True)
+            flash('Invalid email. Access denied.', 'danger')
+    else:
+        print(form.errors)  # Print any validation errors to the console
 
-    return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=False)
+    return render_template('admin_login.html', form=form)
+
+
+# def admin_required(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         if session.get('email') != 'hashclg@gmail.com':  # Replace with the actual admin email
+#             abort(403)  # Forbidden access if email is not admin
+#         return f(*args, **kwargs)
+#     return decorated_function
+
+# @app.route("/admin/login", methods=['GET', 'POST'])
+# def admin_login():
+#     form = EmployeeEmailForm()  # Assuming you want to use email form already defined
+#     otp_form = OTPForm()
+
+#     if form.validate_on_submit() and 'otp_submitted' not in session:
+#         if form.email.data == 'hashclg@gmail.com':  # Restrict login to only this email
+#             otp = str(random.randint(100000, 999999))  # Generate OTP
+#             session['otp'] = otp
+#             session['email'] = form.email.data
+#             msg = Message('Your OTP Code', sender='your-email@gmail.com', recipients=[form.email.data])
+#             msg.body = f'Your OTP code is {otp}'
+#             mail.send(msg)
+#             flash(f'OTP sent to {form.email.data}. Please enter it to verify.', 'info')
+#             session['otp_submitted'] = True
+#             return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=True)
+
+#     elif otp_form.validate_on_submit() and 'otp_submitted' in session:
+#         if otp_form.otp.data == session.get('otp'):
+#             flash('Login successful!', 'success')
+#             session.pop('otp')
+#             session.pop('otp_submitted')
+#             return redirect(url_for('admin_dashboard'))
+#         else:
+#             flash('Invalid OTP. Please try again.', 'danger')
+#             return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=True)
+
+#     return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=False)
 
 @app.route("/admin/dashboard")
 @admin_required
 def admin_dashboard():
     return render_template("admin_dashboard.html")
-
-# @app.route("/admin/report")
-# @admin_required
-# def admin_report():
-#     # SQLAlchemy query to fetch data from the visitors table
-#     visitors_query = db.session.query(
-#         visitors.name.label('identifier'),  # 'identifier' for name or email
-#         visitors.Card_no.label('card_no'),
-#         visitors.start_date,
-#         visitors.end_date,
-#         db.literal('Visitor').label('type')  # Add a 'type' column with value 'Visitor'
-#     ).all()
-    
-#     # SQLAlchemy query to fetch data from the employees table
-#     employees_query = db.session.query(
-#         Employee.email.label('identifier'),  # 'identifier' for employee email
-#         Employee.card_no.label('card_no'),
-#         Employee.start_date,
-#         Employee.end_date,
-#         db.literal('Employee').label('type')  # Add a 'type' column with value 'Employee'
-#     ).all()
-
-#     # Combine both visitors and employees into a single list
-#     combined_data = visitors_query + employees_query
-
-#     # Pagination logic
-#     page = request.args.get('page', 1, type=int)
-#     per_page = 10
-#     total = len(combined_data)
-    
-#     start = (page - 1) * per_page
-#     end = start + per_page
-#     paginated_data = combined_data[start:end]
-    
-#     total_pages = ceil(total / per_page)
-
-
-#     # Render the combined data in the admin report
-#     return render_template("admin_report.html",report_data=paginated_data, page=page, total_pages=total_pages)
 
 @app.route("/admin/report")
 @admin_required

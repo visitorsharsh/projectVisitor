@@ -15,30 +15,21 @@
         {% endif %}
     {% endwith %}
 
-    <form method="POST" id="admin-login-form" onsubmit="return validateEmail()">
+    <form method="POST" id="admin-login-form">
         {{ form.hidden_tag() }}
 
         <!-- Email Input -->
         <div class="form-group">
             {{ form.email.label(class="form-control-label") }} <span class="text-danger">*</span>
             {{ form.email(class="form-control form-control-lg", placeholder="Enter your email", id="admin-email", required=true) }}
+            {% if form.email.errors %}
+                <div class="text-danger">{{ form.email.errors[0] }}</div>
+            {% endif %}
         </div>
-
-        <!-- OTP Input (shown after email is verified) -->
-        {% if show_otp %}
-        <div class="form-group">
-            {{ otp_form.otp.label(class="form-control-label") }} <span class="text-danger">*</span>
-            {{ otp_form.otp(class="form-control form-control-lg", placeholder="Enter OTP sent to your email", required=true) }}
-        </div>
-        {% endif %}
 
         <!-- Submit Button -->
         <div class="form-group">
-            {% if show_otp %}
-                {{ otp_form.submit(class="btn btn-custom btn-lg btn-block", value="Submit OTP") }}
-            {% else %}
-                {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Verify Email") }}
-            {% endif %}
+            {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Login") }}
         </div>
 
         <!-- Mandatory fields message at the bottom -->
@@ -47,21 +38,6 @@
         </p>
     </form>
 </div>
-
-<!-- JavaScript to validate email input -->
-<script>
-    function validateEmail() {
-        const validEmail = 'hashclg@gmail.com';  // Admin's valid email
-        const emailInput = document.getElementById('admin-email').value;
-
-        if (emailInput !== validEmail) {
-            alert('Enter a valid email');  // Show prompt if email is not valid
-            return false;  // Prevent form submission
-        }
-
-        return true;  // Allow form submission if email is valid
-    }
-</script>
 
 <style>
     .content-section {
