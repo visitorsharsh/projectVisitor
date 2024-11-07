@@ -96,12 +96,12 @@
             {{ form.Card_no(class="form-control", required=True) }}
         </div>
 
-        <!-- Card Holder Name Display -->
+        <!-- Card Holder Name Display 
         <div class="form-group">
             <label class="form-control-label">Card Holder Name</label>
             <input type="text" id="card_holder_name" class="form-control" readonly>
         </div>
-
+        -->
         <!-- Professionalism Star Rating -->
         <div class="rating-box">
             <div class="rating-label">
@@ -168,7 +168,7 @@
         <!-- Optional Feedback Text Box -->
         <div class="form-group">
             {{ form.feedback_text.label(class="form-control-label") }}
-            {{ form.feedback_text(class="form-control", placeholder="Leave additional feedback") }}
+            {{ form.feedback_text(class="form-control") }}
         </div>
 
         <!-- Submit Button -->

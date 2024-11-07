@@ -104,6 +104,4 @@ class ExitFeedbackForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(ExitFeedbackForm, self).__init__(*args, **kwargs)
-        # Populate Card_no choices dynamically
-        #self.Card_no.choices = get_used_cards()
         self.Card_no.choices = [('', 'Select Card No')] + get_used_cards()
