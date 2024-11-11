@@ -144,13 +144,13 @@ def exit_feedback():
 #     return jsonify({'card_holder_name': card_holder_name})
 
 
-@app.route("/visitors")
-def display_visitors():
-    all_visitors, existing_cards = display_details()
-    return render_template("visitors.html", title="Visitor Records", visitors=all_visitors, cards=existing_cards)
+# @app.route("/visitors")
+# def display_visitors():
+#     all_visitors, existing_cards = display_details()
+#     return render_template("visitors.html", title="Visitor Records", visitors=all_visitors, cards=existing_cards)
 
 # Employee Section
-@app.route("/employee", methods=['GET', 'POST'])
+@app.route("/employeee", methods=['GET', 'POST'])
 def employee():
     form = EmployeeEmailForm()
 
@@ -221,7 +221,7 @@ def employee():
     
 #     return render_template('employee.html', form=form, otp_form=otp_form, show_otp=False)
 
-@app.route("/employee/card-details/<email>", methods=['GET', 'POST'])
+@app.route("/employeee/card-details/<email>", methods=['GET', 'POST'])
 def employee_card_details(email):
     form = EmployeeCardDetailsForm()
     
@@ -261,7 +261,7 @@ def admin_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-@app.route("/admin/login", methods=['GET', 'POST'])
+@app.route("/gbs/login", methods=['GET', 'POST'])
 def admin_login():
     form = EmployeeEmailForm()  # Assuming you want to use email form already defined
 
@@ -315,12 +315,12 @@ def admin_login():
 
 #     return render_template('admin_login.html', form=form, otp_form=otp_form, show_otp=False)
 
-@app.route("/admin/dashboard")
+@app.route("/gbs/dashboard")
 @admin_required
 def admin_dashboard():
     return render_template("admin_dashboard.html")
 
-@app.route("/admin/report")
+@app.route("/gbs/report")
 @admin_required
 def admin_report():
     # SQLAlchemy queries to fetch visitors and employees
@@ -363,7 +363,7 @@ def admin_report():
 
     return render_template("admin_report.html", report_data=paginated_data, page=page, total_pages=total_pages, sort_order=sort_order)
 
-@app.route("/admin/report/export")
+@app.route("/gbs/report/export")
 @admin_required
 def export_report_csv():
     # SQLAlchemy queries for visitors and employees

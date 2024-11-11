@@ -3,11 +3,11 @@
 {% block content %}
 <div class="content-section">
     <h1 class="text-center">Welcome to Fusion</h1>
-    <p class="text-center">Please Select:</p>
+    <!-- <p class="text-center">Please Select:</p> -->
     
     <div class="form-group text-center">
-        <a href="{{ url_for('submit') }}" class="btn btn-custom">Visitor</a>
-        <a href="{{ url_for('employee') }}" class="btn btn-custom">Employee</a>
+        <a href="{{ url_for('submit') }}" class="btn btn-custom">Check-In</a>
+        <a href="{{ url_for('exit_feedback') }}" class="btn btn-custom">Check-Out</a>
     </div>
 </div>
 
