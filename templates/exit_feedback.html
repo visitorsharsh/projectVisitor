@@ -6,18 +6,22 @@
         font-family: Arial, sans-serif;
         line-height: 1.6;
         background-color: #f8f9fa;
-        padding: 20px;
-        overflow: auto;
+        overflow: hidden; /* Disable scrolling */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
     }
 
     .form-container {
         max-width: 500px;
-        margin: 40px auto;
+        width: 100%;
         padding: 30px;
         border-radius: 8px;
         background-color: #ffffff;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
+        margin: auto; /* Center alignment */
     }
 
     .rating-container {
@@ -25,7 +29,7 @@
     }
 
     .rating-box {
-        padding: 10px;
+        padding: 10px 0;
     }
 
     .rating-label p {
@@ -45,7 +49,7 @@
 
     .rate-area label {
         cursor: pointer;
-        font-size: 180%;
+        font-size: 1.8em;
         color: lightgrey;
         margin: 0 2px;
     }
@@ -78,6 +82,7 @@
         padding: 15px 30px;
         font-size: 1.3em;
         margin-top: 20px;
+        width: 100%; /* Full width */
         transition: background-color 0.3s ease;
     }
 
@@ -87,7 +92,7 @@
     }
 </style>
 
-<form id="exit-feedback-form" method="POST" action="" style="width: 80%;">
+<form id="exit-feedback-form" method="POST" action="" style="width: 100%;">
     {{ form.hidden_tag() }}
     <div class="form-container">
         <!-- Card No Dropdown -->
@@ -96,12 +101,6 @@
             {{ form.Card_no(class="form-control", required=True) }}
         </div>
 
-        <!-- Card Holder Name Display 
-        <div class="form-group">
-            <label class="form-control-label">Card Holder Name</label>
-            <input type="text" id="card_holder_name" class="form-control" readonly>
-        </div>
-        -->
         <!-- Professionalism Star Rating -->
         <div class="rating-box">
             <div class="rating-label">
@@ -110,15 +109,15 @@
             <div class="rating">
                 <ul class="rate-area">
                     <input type="radio" id="professionalism_star5" name="professionalism" value="5" />
-                    <label class="star" for="professionalism_star5" title="Awesome" aria-hidden="true"></label>
+                    <label class="star" for="professionalism_star5" title="Awesome"></label>
                     <input type="radio" id="professionalism_star4" name="professionalism" value="4" />
-                    <label class="star" for="professionalism_star4" title="Great" aria-hidden="true"></label>
+                    <label class="star" for="professionalism_star4" title="Great"></label>
                     <input type="radio" id="professionalism_star3" name="professionalism" value="3" />
-                    <label class="star" for="professionalism_star3" title="Very good" aria-hidden="true"></label>
+                    <label class="star" for="professionalism_star3" title="Very good"></label>
                     <input type="radio" id="professionalism_star2" name="professionalism" value="2" />
-                    <label class="star" for="professionalism_star2" title="Good" aria-hidden="true"></label>
+                    <label class="star" for="professionalism_star2" title="Good"></label>
                     <input type="radio" id="professionalism_star1" name="professionalism" value="1" />
-                    <label class="star" for="professionalism_star1" title="Bad" aria-hidden="true"></label>
+                    <label class="star" for="professionalism_star1" title="Bad"></label>
                 </ul>
             </div>
         </div>
@@ -131,15 +130,15 @@
             <div class="rating">
                 <ul class="rate-area">
                     <input type="radio" id="hospitality_star5" name="hospitality" value="5" />
-                    <label class="star" for="hospitality_star5" title="Awesome" aria-hidden="true"></label>
+                    <label class="star" for="hospitality_star5" title="Awesome"></label>
                     <input type="radio" id="hospitality_star4" name="hospitality" value="4" />
-                    <label class="star" for="hospitality_star4" title="Great" aria-hidden="true"></label>
+                    <label class="star" for="hospitality_star4" title="Great"></label>
                     <input type="radio" id="hospitality_star3" name="hospitality" value="3" />
-                    <label class="star" for="hospitality_star3" title="Very good" aria-hidden="true"></label>
+                    <label class="star" for="hospitality_star3" title="Very good"></label>
                     <input type="radio" id="hospitality_star2" name="hospitality" value="2" />
-                    <label class="star" for="hospitality_star2" title="Good" aria-hidden="true"></label>
+                    <label class="star" for="hospitality_star2" title="Good"></label>
                     <input type="radio" id="hospitality_star1" name="hospitality" value="1" />
-                    <label class="star" for="hospitality_star1" title="Bad" aria-hidden="true"></label>
+                    <label class="star" for="hospitality_star1" title="Bad"></label>
                 </ul>
             </div>
         </div>
@@ -152,15 +151,15 @@
             <div class="rating">
                 <ul class="rate-area">
                     <input type="radio" id="hygiene_star5" name="hygiene" value="5" />
-                    <label class="star" for="hygiene_star5" title="Awesome" aria-hidden="true"></label>
+                    <label class="star" for="hygiene_star5" title="Awesome"></label>
                     <input type="radio" id="hygiene_star4" name="hygiene" value="4" />
-                    <label class="star" for="hygiene_star4" title="Great" aria-hidden="true"></label>
+                    <label class="star" for="hygiene_star4" title="Great"></label>
                     <input type="radio" id="hygiene_star3" name="hygiene" value="3" />
-                    <label class="star" for="hygiene_star3" title="Very good" aria-hidden="true"></label>
+                    <label class="star" for="hygiene_star3" title="Very good"></label>
                     <input type="radio" id="hygiene_star2" name="hygiene" value="2" />
-                    <label class="star" for="hygiene_star2" title="Good" aria-hidden="true"></label>
+                    <label class="star" for="hygiene_star2" title="Good"></label>
                     <input type="radio" id="hygiene_star1" name="hygiene" value="1" />
-                    <label class="star" for="hygiene_star1" title="Bad" aria-hidden="true"></label>
+                    <label class="star" for="hygiene_star1" title="Bad"></label>
                 </ul>
             </div>
         </div>
@@ -173,47 +172,8 @@
 
         <!-- Submit Button -->
         <div class="form-group">
-            {{ form.submit(class="btn btn-custom btn-lg btn-block") }}
+            {{ form.submit(class="btn btn-custom btn-lg") }}
         </div>
     </div>
 </form>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // AJAX to get card holder name
-        document.querySelector('#Card_no').addEventListener('change', function() {
-            const cardNo = this.value;
-            fetch(`/get_card_holder_name/${cardNo}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.querySelector('#card_holder_name').value = data.card_holder_name;
-                });
-        });
-
-        // AJAX form submission
-        document.getElementById('exit-feedback-form').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent default form submission
-
-            const form = this;
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', form.action, true);
-            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            
-            const formData = new FormData(form);
-            xhr.send(new URLSearchParams(formData).toString());
-
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                        alert("Thanks for Visiting Us!");
-                        window.location.href = "{{ url_for('home') }}";
-                    }
-                }
-            };
-        });
-    });
-</script>
-
 {% endblock content %}

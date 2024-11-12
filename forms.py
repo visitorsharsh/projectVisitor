@@ -23,7 +23,7 @@ class visitorform(FlaskForm):
     other_purpose = StringField('Other Purpose')
     #Card_no = SelectField('Card No', choices=[(str(i), str(i)) for i in range(1, 11)], validators=[DataRequired()])
     #Card_no = SelectField('Card No', choices=[('1', 'Card 1'), ('2', 'Card 2')], validate_choice=False)
-    Card_no = SelectField('Card No', choices=[],  validate_choice=False)
+    Card_no = SelectField('Card Number', choices=[],  validate_choice=False)
     submit = SubmitField('Submit')
 
     def __init__(self, *args, **kwargs):

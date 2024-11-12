@@ -8,7 +8,7 @@
         line-height: 1.6;
         background-color: #f8f9fa;
         padding: 20px;
-        overflow: auto; /* Enable scrolling */
+        overflow: auto;
     }
 
     /* Form section styles */
@@ -23,7 +23,7 @@
     }
 
     .form-group {
-        margin-bottom: 15px; /* Standardized margin between form groups */
+        margin-bottom: 15px;
     }
 
     label {
@@ -32,8 +32,13 @@
     }
 
     .mandatory {
-        color: red; /* Red color for the asterisk */
+        color: red;
     }
+
+    .purpose-visit, .card-number {
+        padding-top: 3px;
+    }
+
 
     input[type="text"], input[type="number"], input[type="checkbox"] {
         display: inline-block;
@@ -57,11 +62,11 @@
     }
 
     #goods_details {
-        margin-top: 10px; /* Smaller gap between checkbox and goods fields */
+        margin-top: 10px;
     }
 
     .goods-field {
-        margin-bottom: 10px; /* Consistent spacing between goods fields */
+        margin-bottom: 10px;
     }
 
     .btn-custom {
@@ -83,62 +88,80 @@
             font-size: 1.5em;
         }
     }
+
+    /* Flex styles for two-column layout */
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .form-col {
+        flex: 1 1 45%;
+    }
+
+    /* Responsive Design: Stack fields in one column on smaller screens */
+    @media (max-width: 768px) {
+        .form-col {
+            flex: 1 1 100%;
+        }
+
+        .checkbox-group {
+            flex-direction: column;
+        }
+    }
+
 </style>
 
 <div class="content-section">
-    <form method="POST" action="" id="visitor-form" style="width: 80%;">
+    <form method="POST" action="" id="visitor-form">
         {{ form.hidden_tag() }}
         <fieldset class="form-group">
             <legend class="border-bottom mb-4">Enter your details</legend>
-            <div class="form-group">
-                {{ form.name.label(class="form-control-label") }} <span class="mandatory">*</span>
-                {{ form.name(class="form-control form-control-lg", placeholder="Enter your name") }}
-            </div>
-            <!--HASH-->
-            <div class="form-group">
-                {{ form.contact_number.label(class="form-control-label") }} <span class="mandatory">*</span>
-                {{ form.contact_number(class="form-control", placeholder="Enter your contact number") }}
-            </div>
-
-            <div class="form-group">
-                {{ form.meeting_person.label(class="form-control-label") }} <span class="mandatory">*</span>
-                {{ form.meeting_person(class="form-control", placeholder="Who are you meeting?") }}
-            </div>
-            <!--HASH-->
-            <div class="form-group">
-                {{ form.purpose.label(class="form-control-label") }} <span class="mandatory">*</span>
-                {{ form.purpose(class="form-control form-control-lg", placeholder="Purpose of visit", id="purpose") }}
-            </div>
-            <div class="form-group other-purpose" id="other_purpose_field">
-                {{ form.other_purpose.label(class="form-control-label") }}
-                {{ form.other_purpose(class="form-control form-control-lg", placeholder="Specify other purpose") }}
-            </div>
-
-            <div class="form-group">
-                {{ form.Card_no.label(class="form-control-label") }} <span class="mandatory">*</span>
-                {{ form.Card_no(class="form-control form-control-lg", placeholder="Enter your card number") }}
+            <div class="form-row">
+                <div class="form-group form-col">
+                    {{ form.name.label(class="form-control-label") }} <span class="mandatory">*</span>
+                    {{ form.name(class="form-control form-control-lg", placeholder="Enter your name") }}
+                </div>
+                <div class="form-group form-col">
+                    {{ form.contact_number.label(class="form-control-label") }} <span class="mandatory">*</span>
+                    {{ form.contact_number(class="form-control", placeholder="Enter your contact number") }}
+                </div>
+                <div class="form-group form-col">
+                    {{ form.meeting_person.label(class="form-control-label") }} <span class="mandatory">*</span>
+                    {{ form.meeting_person(class="form-control", placeholder="Who are you meeting?") }}
+                </div>
+                <div class="form-group purpose-visit form-col">
+                    {{ form.purpose.label(class="form-control-label") }} <span class="mandatory">*</span>
+                    {{ form.purpose(class="form-control form-control-lg", placeholder="Purpose of visit") }}
+                </div>
+                <div class="form-group form-col other-purpose" id="other_purpose_field">
+                    {{ form.other_purpose.label(class="form-control-label") }}
+                    {{ form.other_purpose(class="form-control form-control-lg", placeholder="Specify other purpose") }}
+                </div>
+                <div class="form-group card-number form-col">
+                    {{ form.Card_no.label(class="form-control-label") }} <span class="mandatory">*</span>
+                    {{ form.Card_no(class="form-control form-control-lg", placeholder="Enter your card number") }}
+                </div>
             </div>
 
-            <!--HASH-->
             <div class="form-group checkbox-group">
-                <!-- Checkbox to indicate if the user is bringing goods -->
                 <input type="checkbox" id="bringing_goods" name="bringing_goods">
                 <label for="bringing_goods">Are you bringing any goods (materials)?</label>
             </div>
 
-            <!-- Hidden fields for entering goods details -->
             <div class="form-group" id="goods_details" style="display:none;">
-                <div class="goods-field">
-                    <label for="goods_name">Goods/Material Name</label>
-                    <input type="text" id="goods_name" name="goods_name" class="form-control" placeholder="Enter goods/material name">
-                </div>
-
-                <div class="goods-field">
-                    <label for="goods_quantity">Quantity</label>
-                    <input type="number" id="goods_quantity" name="goods_quantity" class="form-control" placeholder="Enter quantity">
+                <div class="form-row">
+                    <div class="goods-field form-col">
+                        <label for="goods_name">Goods/Material Name</label>
+                        <input type="text" id="goods_name" name="goods_name" class="form-control" placeholder="Enter goods/material name">
+                    </div>
+                    <div class="goods-field form-col">
+                        <label for="goods_quantity">Quantity</label>
+                        <input type="number" id="goods_quantity" name="goods_quantity" class="form-control" placeholder="Enter quantity">
+                    </div>
                 </div>
             </div>
-        <!--HASH-->
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-custom btn-lg btn-block", value="Submit") }}
@@ -148,9 +171,8 @@
     <p class="text-muted"><small><span class="mandatory">*</span> Fields are mandatory.</small></p>
 </div>
 
-<div class="border-top pt-3">
-    <!-- Optional: Additional content below the form -->
-</div>
+<div class="border-top pt-3"></div>
+
 
 <script>
     // Function to toggle the visibility of 'Other Purpose' field
