@@ -89,7 +89,7 @@ class EmployeeCardDetailsForm(FlaskForm):
 
 class ExitFeedbackForm(FlaskForm):
     # Card No dropdown, required
-    Card_no = SelectField('Card No', choices=[], validators=[DataRequired()])
+    Card_no = SelectField('Card Number', choices=[], validators=[DataRequired()])
     card_holder_name = StringField('Card Holder', render_kw={'readonly': True})  # Read-only field for the name
     # Rating fields for feedback (optional)
     professionalism = RadioField('Professionalism', choices=[('1', '★'), ('2', '★★'), ('3', '★★★'), ('4', '★★★★'), ('5', '★★★★★')], validators=[Optional()])
@@ -97,7 +97,7 @@ class ExitFeedbackForm(FlaskForm):
     hygiene = RadioField('Hygiene', choices=[('1', '★'), ('2', '★★'), ('3', '★★★'), ('4', '★★★★'), ('5', '★★★★★')], validators=[Optional()])
 
     # Optional feedback text area
-    feedback_text = TextAreaField('Feedback', validators=[Optional()])
+    feedback_text = TextAreaField('Feedback:', validators=[Optional()])
 
     # Submit button
     submit = SubmitField('Submit')
