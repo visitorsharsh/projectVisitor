@@ -120,7 +120,6 @@ def exit_feedback():
             )
             db.session.add(new_feedback)
             db.session.commit()
-            print(professionalism)
 
         # Return JSON response for AJAX
         return jsonify({'success': True})
