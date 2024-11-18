@@ -7,19 +7,24 @@
         font-family: Arial, sans-serif;
         line-height: 1.6;
         background-color: #f8f9fa;
-        padding: 20px;
-        overflow: auto;
+        margin: 0;
+        height: 100vh; /* Full height of the viewport */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Prevent scrolling */
     }
 
     /* Form section styles */
     .content-section {
         max-width: 600px;
-        margin: 0 auto;
+        width: 100%; /* Responsive width */
         padding: 20px;
         border: 1px solid #ccc;
         border-radius: 8px;
         background-color: #fff;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transform: translateY(7px);
     }
 
     .form-group {
